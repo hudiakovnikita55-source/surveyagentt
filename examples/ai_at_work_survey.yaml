@@ -1,0 +1,108 @@
+# Example questionnaire (same structure the Google Form parser produces).
+# Types: short_text, paragraph, single_choice, dropdown, checkboxes, scale, rating,
+#        grid, checkbox_grid, date, time.  "other: true" adds an "Other: ..." option.
+title: AI at work in Europe
+description: >
+  A short survey about how people in Europe use AI tools in their jobs.
+  It takes about 5 minutes. All answers are anonymous.
+questions:
+  - id: age
+    title: What is your age?
+    type: single_choice
+    required: true
+    options: ["18-24", "25-34", "35-44", "45-54", "55-64", "65 or older"]
+
+  - id: gender
+    title: What is your gender?
+    type: single_choice
+    required: true
+    options: [Female, Male, Non-binary, Prefer not to say]
+
+  - id: country
+    title: In which country do you currently live?
+    type: dropdown
+    required: true
+    other: true
+    options: [Austria, Belgium, Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France,
+              Germany, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta,
+              Netherlands, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia, Spain, Sweden,
+              Switzerland, Ukraine, United Kingdom]
+
+  - id: job_title
+    title: What is your current job title?
+    type: short_text
+    required: true
+
+  - id: company_size
+    title: How many employees does your organisation have?
+    type: single_choice
+    required: true
+    options: ["Just me", "2-10", "11-50", "51-250", "251-1,000", "More than 1,000"]
+
+  - id: frequency
+    title: How often do you use AI tools for your work?
+    type: single_choice
+    required: true
+    options: [Several times a day, Daily, A few times a week, Weekly, A few times a month, Rarely]
+
+  - id: tools
+    title: Which AI tools do you use for work? (select all that apply)
+    type: checkboxes
+    required: true
+    other: true
+    options: [ChatGPT, Claude, Gemini, Microsoft Copilot, GitHub Copilot, Perplexity, DeepL, Midjourney,
+              Mistral Le Chat]
+
+  - id: tasks
+    title: What do you mainly use AI for in your work?
+    type: paragraph
+    required: true
+
+  - id: satisfaction
+    title: Overall, how satisfied are you with the AI tools you use at work?
+    type: scale
+    required: true
+    min: 1
+    max: 5
+    labels: [Very dissatisfied, Very satisfied]
+
+  - id: statements
+    title: How much do you agree with the following statements?
+    type: grid
+    required: true
+    rows:
+      - AI makes me more productive
+      - I trust the answers AI tools give me
+      - I worry that AI could replace parts of my job
+      - My employer gives clear rules on using AI
+    options: [Strongly disagree, Disagree, Neutral, Agree, Strongly agree]
+
+  - id: policy
+    title: Does your employer officially allow the use of AI tools?
+    type: single_choice
+    required: false
+    options: ["Yes", "No", "There is no clear policy", "Not applicable (self-employed)"]
+
+  - id: time_saved
+    title: Roughly how much time does AI save you per week?
+    type: single_choice
+    required: true
+    options: ["None", "Less than 1 hour", "1-3 hours", "3-5 hours", "More than 5 hours"]
+
+  - id: concern
+    title: What is your biggest concern about using AI at work?
+    type: paragraph
+    required: false
+
+  - id: recommend
+    title: How likely are you to recommend AI tools to a colleague?
+    type: scale
+    required: true
+    min: 0
+    max: 10
+    labels: [Not at all likely, Extremely likely]
+
+  - id: comments
+    title: Anything else you would like to add?
+    type: paragraph
+    required: false
