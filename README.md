@@ -65,23 +65,25 @@ python -m surveyagent submit output/responses.json --send --delay 3
 
 ## Анкета «Использование ИИ в маркетинге и продвижении» (PL / EN / RU)
 
-Три языковые версии анкеты лежат в [`surveys/ai_marketing/`](surveys/ai_marketing/): `en.yaml`, `pl.yaml`, `ru.yaml`.
-Коды вопросов P1–P15, порядок вариантов и логика одинаковые во всех версиях:
-P1 «Нет» → конец анкеты, P2 «Нет» → конец, P7 «Нет» → пропуск P8–P11 и переход к P12;
-в P13 вариант «не использую ИИ» можно выбрать только отдельно.
+Три языковые версии анкеты лежат в [`surveys/ai_marketing/`](surveys/ai_marketing/): `pl.yaml`, `en.yaml`, `ru.yaml`.
+Тексты вопросов и вариантов совпадают с живой Google Form (одна форма: сначала выбор языка, потом раздел P1–P15
+на этом языке). Логика та же: P1 «Нет» → конец, P2 «Нет» → конец, P7 «Нет» → пропуск P8–P11;
+в P13 вариант «не использую ИИ» выбирается только отдельно.
 
 **Синтетический тестовый набор** (офлайн-режим, 100 персон-маркетологов) лежит в
 [`surveys/ai_marketing/synthetic/`](surveys/ai_marketing/synthetic/). Он нужен, чтобы заранее собрать анализ
-(таблицы, графики, скрипты), пока идёт сбор настоящих ответов. Это не результаты опроса, в форму он не отправляется,
-в каждом файле есть столбец `synthetic = yes`.
+(таблицы, графики, формулы), пока идёт сбор настоящих ответов. Это не результаты опроса, в форму он не отправляется,
+в каждой строке есть `synthetic = yes`.
 
-- `synthetic_en|pl|ru.json/.csv` — ответы по языковым версиям (каждая персона отвечала на своём языке:
-  носители польского на PL, русского на RU, остальные на EN);
-- `synthetic_merged.csv` — одна таблица на всех: столбцы `P1…P15` (сетки и множественный выбор разложены по столбцам
-  `P10_1…P10_8`, `P9_1…P9_5` = 1/0), значения переведены в английские формулировки, плюс `language`, `status`
-  (`complete`, `ended_at_P1`, `ended_at_P2`), `P3_country` (страна, приведённая к одному написанию),
-  `P13_conflict` (отмечено «не использую ИИ» вместе с другими вариантами);
-- `synthetic_merged_codebook.csv` — описание каждого столбца.
+- **`synthetic_sheet.xlsx`** — в той же структуре, что таблица ответов формы в Google Sheets:
+  лист `Form Responses 1` (Timestamp, выбор языка «Polski / English / Русский», затем столбцы PL, EN и RU;
+  заполнен только блок выбранного языка, ответы «Tak/Nie», «Yes/No», «Да/Нет») и лист `Combined data`
+  (Timestamp, Language, P1–P15 на английском, множественный выбор через « | », сетки в виде JSON).
+  В конце обоих листов добавлен столбец `synthetic`, остальные столбцы стоят на своих местах;
+- `synthetic_pl|en|ru.json/.csv` — ответы по языковым версиям;
+- `synthetic_merged.csv` + `synthetic_merged_codebook.csv` — таблица «для статистики»: сетки и множественный выбор
+  разложены по столбцам (`P10_1…P10_8`, `P9_1…P9_6` = 1/0), плюс `status` (`complete`, `ended_at_P1`, `ended_at_P2`),
+  `P3_country` (страна в одном написании), `P13_conflict`.
 
 Воспроизвести набор или сделать новый:
 
@@ -89,26 +91,29 @@ P1 «Нет» → конец анкеты, P2 «Нет» → конец, P7 «Н
 python -m surveyagent personas --audience marketing --seed 37 --country-boost PL=4,LV=5,EE=5 \
     --out data/marketing_personas.json
 python -m surveyagent answer --personas data/marketing_personas.json --mode offline \
-    --form surveys/ai_marketing/en.yaml --form surveys/ai_marketing/pl.yaml --form surveys/ai_marketing/ru.yaml \
+    --form surveys/ai_marketing/pl.yaml --form surveys/ai_marketing/en.yaml --form surveys/ai_marketing/ru.yaml \
+    --language-question "Choose language / Wybierz język / Выберите язык" \
     --out surveys/ai_marketing/synthetic/synthetic.json
 # с Claude вместо офлайн-логики (живые открытые ответы): убрать --mode offline, нужен ANTHROPIC_API_KEY
 ```
 
-**Настоящие ответы в ту же таблицу.** Когда соберёте реальные ответы, скачайте из каждой формы CSV
-(«Ответы» → «Скачать ответы (.csv)» или из Google Таблицы) и сведите их той же командой:
+**Настоящие ответы в те же таблицы.** Скачайте таблицу ответов формы как CSV (лист `Form Responses 1`:
+«Файл» → «Скачать» → «CSV») и передайте её три раза, по разу на каждую языковую версию:
 
 ```bash
 python -m surveyagent merge \
-    --input surveys/ai_marketing/en.yaml exports/en.csv \
-    --input surveys/ai_marketing/pl.yaml exports/pl.csv \
-    --input surveys/ai_marketing/ru.yaml exports/ru.csv \
-    --out output/merged.csv
+    --input surveys/ai_marketing/pl.yaml responses.csv \
+    --input surveys/ai_marketing/en.yaml responses.csv \
+    --input surveys/ai_marketing/ru.yaml responses.csv \
+    --sheet output/real_sheet.xlsx --language-question "Choose language / Wybierz język / Выберите язык" \
+    --out output/real_merged.csv
 ```
 
-Столбцы выгрузки сопоставляются с вопросами по тексту (с кодом «P7.» в начале или без него), варианты — по тексту
-в своей версии и переводятся по позиции. Получится таблица той же структуры, что `synthetic_merged.csv`
-(`synthetic = no`), так что анализ, собранный на тестовых данных, работает без изменений. Если формулировка в форме
-отличается от YAML, команда напишет, какой вопрос не найден: поправьте текст в YAML.
+Для каждой версии берутся только те строки, где заполнен её блок. Получаются те же файлы, что в тестовом наборе
+(`synthetic = no` / без столбца `synthetic`), так что анализ, собранный на тестовых данных, работает без изменений.
+На настоящей таблице формы это проверено: лист `Combined data`, собранный командой, совпал с листом, собранным
+вручную, по всем ячейкам. Если формулировку в форме поменяют, команда напишет, какой вопрос не найден: поправьте
+текст в YAML.
 
 ## Персоны
 

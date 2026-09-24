@@ -2,6 +2,7 @@
 # Same ids (P1-P15), option order and logic as pl.yaml and ru.yaml, so the three versions can be merged.
 # go_to = "Go to section based on answer" in Google Forms; exclusive = option that must be ticked alone.
 # topic = what the question measures (used by the offline answerer, independent of the language).
+# As in the live Google Form, "Other ... (please specify)" is a plain option without a text field.
 title: "QUESTIONNAIRE: Use of AI in marketing and promotion"
 language: EN
 description: >
@@ -50,7 +51,7 @@ questions:
       - I work in an in-house marketing team
       - I work as a freelancer
       - I run my own business and manage its marketing
-    other: true  # "Other marketing-related role (please specify)"
+      - Other marketing-related role (please specify)
 
   - id: P5
     section: II. About the respondent
@@ -104,7 +105,7 @@ questions:
       - AI in advertising or marketing automation systems
       - Analytics, prediction, or audience segmentation
       - Chatbots or customer service
-    other: true  # "Other (please specify)"
+      - Other (please specify)
 
   - id: P10
     section: III. Use of AI

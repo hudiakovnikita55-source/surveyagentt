@@ -85,9 +85,10 @@
           "Pracuję w agencji marketingowej lub reklamowej",
           "Pracuję w dziale marketingu firmy lub organizacji",
           "Pracuję jako freelancer/freelancerka",
-          "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem"
+          "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+          "Inna rola związana z marketingiem (jaka?)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -220,9 +221,10 @@
           "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
           "AI w systemach reklamowych lub automatyzacji marketingu",
           "Analityka, prognozowanie lub segmentacja odbiorców",
-          "Chatboty lub obsługa klienta"
+          "Chatboty lub obsługa klienta",
+          "Inne (jakie?)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -431,7 +433,7 @@
     {
       "persona_id": "P003",
       "persona_name": "Aleksandra Kowalczyk",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -484,7 +486,7 @@
     {
       "persona_id": "P004",
       "persona_name": "Jakub Kaczmarek",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -509,7 +511,7 @@
     {
       "persona_id": "P019",
       "persona_name": "Jakub Lewandowski",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -534,7 +536,7 @@
     {
       "persona_id": "P025",
       "persona_name": "Weronika Piotrowska",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -590,7 +592,7 @@
     {
       "persona_id": "P027",
       "persona_name": "Paulina Nowicka",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -644,7 +646,7 @@
     {
       "persona_id": "P031",
       "persona_name": "Paulina Pawlak",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -652,9 +654,7 @@
         "P1": "Tak",
         "P2": "Tak",
         "P3": "Polska",
-        "P4": {
-          "other": "marketing obok głównej pracy"
-        },
+        "P4": "Inna rola związana z marketingiem (jaka?)",
         "P5": "Mniej niż 1 rok",
         "P6": "50–249 osób",
         "P7": "Tak",
@@ -701,7 +701,7 @@
     {
       "persona_id": "P033",
       "persona_name": "Dominika Kwiatkowska",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -753,7 +753,7 @@
     {
       "persona_id": "P040",
       "persona_name": "Marta Szymańska",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -808,7 +808,7 @@
     {
       "persona_id": "P052",
       "persona_name": "Wojciech Mazur",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -824,9 +824,7 @@
         "P9": [
           "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
           "Analityka, prognozowanie lub segmentacja odbiorców",
-          {
-            "other": "tłumaczenie (DeepL)"
-          }
+          "Inne (jakie?)"
         ],
         "P10": {
           "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
@@ -866,7 +864,7 @@
     {
       "persona_id": "P057",
       "persona_name": "Wojciech Adamczyk",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -901,7 +899,7 @@
     {
       "persona_id": "P062",
       "persona_name": "Julia Woźniak",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -909,9 +907,7 @@
         "P1": "Tak",
         "P2": "Tak",
         "P3": "Polska",
-        "P4": {
-          "other": "e-commerce"
-        },
+        "P4": "Inna rola związana z marketingiem (jaka?)",
         "P5": "Powyżej 10 lat",
         "P6": "2–9 osób",
         "P7": "Tak",
@@ -921,9 +917,7 @@
           "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
           "AI w systemach reklamowych lub automatyzacji marketingu",
           "Analityka, prognozowanie lub segmentacja odbiorców",
-          {
-            "other": "tłumaczenie (DeepL)"
-          }
+          "Inne (jakie?)"
         ],
         "P10": {
           "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
@@ -961,7 +955,7 @@
     {
       "persona_id": "P063",
       "persona_name": "Bartosz Dąbrowski",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1018,7 +1012,7 @@
     {
       "persona_id": "P085",
       "persona_name": "Paweł Michalak",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,

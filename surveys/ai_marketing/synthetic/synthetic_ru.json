@@ -85,9 +85,10 @@
           "Работаю в маркетинговом или рекламном агентстве",
           "Работаю в отделе маркетинга компании или организации",
           "Работаю как фрилансер",
-          "Веду собственный бизнес и самостоятельно занимаюсь маркетингом"
+          "Веду собственный бизнес и самостоятельно занимаюсь маркетингом",
+          "Другая роль, связанная с маркетингом (укажите)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -220,9 +221,10 @@
           "Создание изображений или видео (например, Midjourney, DALL·E, Canva AI)",
           "ИИ в рекламных системах или системах автоматизации маркетинга",
           "Аналитика, прогнозирование или сегментация аудитории",
-          "Чат-боты или поддержка клиентов"
+          "Чат-боты или поддержка клиентов",
+          "Другое (укажите)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -431,7 +433,7 @@
     {
       "persona_id": "P007",
       "persona_name": "Julia Sokolova",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -485,7 +487,7 @@
     {
       "persona_id": "P012",
       "persona_name": "Anna Smirnova",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -539,7 +541,7 @@
     {
       "persona_id": "P079",
       "persona_name": "Natalja Fjodorova",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,

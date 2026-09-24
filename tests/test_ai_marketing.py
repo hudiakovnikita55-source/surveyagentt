@@ -135,7 +135,7 @@ def test_offline_answers_follow_logic_and_profile(forms, marketers):
             for row, task in zip(en.question("P10").rows, m["tasks"]):
                 assert (answers["P10"][row] == "I do not perform this type of task") == (m["tasks"][task] == "no")
         if m["setting"] == "other":
-            assert isinstance(answers["P4"], dict)
+            assert answers["P4"] == "Other marketing-related role (please specify)"
 
 
 def test_offline_answers_do_not_depend_on_language(forms, marketers):
@@ -243,9 +243,9 @@ def test_merge_reads_a_real_google_export(tmp_path, forms):
     header = ["Sygnatura czasowa"] + [f"{q.id}. {q.title}" for q in pl.questions if q.type != "grid"]
     grid_cols = [f"{q.title} [{row}]" for q in pl.questions if q.type == "grid" for row in q.rows]
     p9, p13 = pl.question("P9"), pl.question("P13")
-    values = {"P1": "Tak", "P2": "Tak", "P3": "polska", "P4": "Social media w urzędzie miasta", "P5": "4–6 lat",
-              "P6": "50–249 osób", "P7": "Tak", "P8": "Codziennie",
-              "P9": f"{p9.options[0]}, {p9.options[1]}, Descript",
+    values = {"P1": "Tak", "P2": "Tak", "P3": "polska ", "P4": "Inna rola związana z marketingiem (jaka?)",
+              "P5": "4–6 lat", "P6": "50–249 osób", "P7": "Tak", "P8": "Codziennie",
+              "P9": f"{p9.options[0]}, {p9.options[1]}, {p9.options[5]}",
               "P13": f"{p13.options[0]}, {p13.options[7]}", "P14": "Tak", "P15": "Szybciej piszę posty."}
     row = ["2026/10/02 10:15:00 AM GMT+2"] + [values.get(q.id, "") for q in pl.questions if q.type != "grid"]
     row += [q.options[3] for q in pl.questions if q.type == "grid" for _ in q.rows]
@@ -257,12 +257,52 @@ def test_merge_reads_a_real_google_export(tmp_path, forms):
     assert warnings == []
     r = rows[0]
     assert r["respondent_id"] == "PL-0001" and r["synthetic"] == "no" and r["submitted_at"].startswith("2026/10/02")
-    assert r["P3_country"] == "Poland" and r["P4"] == "Other" and r["P4_other"] == "Social media w urzędzie miasta"
-    assert (r["P9_1"], r["P9_2"], r["P9_3"], r["P9_other"]) == (1, 1, 0, "Descript")
+    assert r["P3"] == "polska " and r["P3_country"] == "Poland"
+    assert r["P4"] == "Other marketing-related role (please specify)"
+    assert (r["P9_1"], r["P9_2"], r["P9_3"], r["P9_6"]) == (1, 1, 0, 1)
     assert r["P13_1"] == 1 and r["P13_8"] == 1 and r["P13_conflict"] == 1
     assert r["P10_1"] == forms["en"].question("P10").options[3] and r["P14"] == "Yes"
     codebook = write_merged(tmp_path / "m.csv", ref, rows)
     assert "P13_conflict" in codebook.read_text(encoding="utf-8-sig")
+
+
+def test_google_sheet_layout_round_trip(tmp_path, forms, marketers):
+    """Synthetic answers -> the layout of the form's responses sheet -> CSV export -> read back: same data."""
+    import openpyxl
+    from surveyagent.merge import collect, write_google_sheet
+
+    versions = [forms["pl"], forms["en"], forms["ru"]]
+    inputs = []
+    for form in versions:
+        group = [p for p in marketers if preferred_language(p, ["EN", "PL", "RU"]) == form.language]
+        out = tmp_path / f"s_{form.language}.json"
+        generate_responses(form, group, out, mode="offline", log=lambda *_: None)
+        inputs.append((form, out))
+    ref, rows = collect(inputs)
+    path = write_google_sheet(tmp_path / "sheet.xlsx", ref, rows, versions, "Choose language / Wybierz język")
+    wb = openpyxl.load_workbook(path)
+    fr, cd = wb["Form Responses 1"], wb["Combined data"]
+    header = [c.value for c in fr[1]]
+    assert header[:3] == ["Timestamp", "Choose language / Wybierz język", "P1. " + forms["pl"].question("P1").title]
+    assert len(header) == 2 + 3 * 32 + 1 and header[-1] == "synthetic"
+    assert "P10. For which marketing tasks do you use AI? [Audience and market analysis]" in header
+    assert [c.value for c in cd[1]] == ["Timestamp", "Language"] + [f"P{i}" for i in range(1, 16)] + ["synthetic"]
+    assert {fr.cell(r, 2).value for r in range(2, fr.max_row + 1)} == {"Polski", "English", "Русский"}
+    combined = list(cd.iter_rows(min_row=2, values_only=True))
+    assert all(r[-1] == "yes" for r in combined)
+    grid = next(r[11] for r in combined if r[11])
+    assert json.loads(grid) and set(json.loads(grid)) <= set(forms["en"].question("P10").rows)
+    assert any(" | " in (r[10] or "") for r in combined)
+
+    export = tmp_path / "export.csv"
+    with open(export, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        for row in fr.iter_rows(values_only=True):
+            writer.writerow([v.isoformat(sep=" ") if hasattr(v, "isoformat") else ("" if v is None else v)
+                             for v in row])
+    _, again = collect([(form, export) for form in versions])
+    assert sorted((r.language, json.dumps(a, sort_keys=True, ensure_ascii=False)) for r, _, a in again) == \
+           sorted((r.language, json.dumps(a, sort_keys=True, ensure_ascii=False)) for r, _, a in rows)
 
 
 def test_country_normalisation():

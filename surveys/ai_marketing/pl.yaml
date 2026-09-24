@@ -48,7 +48,7 @@ questions:
       - Pracuję w dziale marketingu firmy lub organizacji
       - Pracuję jako freelancer/freelancerka
       - Prowadzę własną firmę i samodzielnie zajmuję się marketingiem
-    other: true  # "Inna rola związana z marketingiem (jaka?)"
+      - Inna rola związana z marketingiem (jaka?)
 
   - id: P5
     section: II. Informacje o respondencie
@@ -102,7 +102,7 @@ questions:
       - AI w systemach reklamowych lub automatyzacji marketingu
       - Analityka, prognozowanie lub segmentacja odbiorców
       - Chatboty lub obsługa klienta
-    other: true  # "Inne (jakie?)"
+      - Inne (jakie?)
 
   - id: P10
     section: III. Wykorzystanie AI

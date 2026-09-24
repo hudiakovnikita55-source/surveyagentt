@@ -85,9 +85,10 @@
           "I work at a marketing or advertising agency",
           "I work in an in-house marketing team",
           "I work as a freelancer",
-          "I run my own business and manage its marketing"
+          "I run my own business and manage its marketing",
+          "Other marketing-related role (please specify)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -220,9 +221,10 @@
           "Image or video creation (e.g. Midjourney, DALL·E, Canva AI)",
           "AI in advertising or marketing automation systems",
           "Analytics, prediction, or audience segmentation",
-          "Chatbots or customer service"
+          "Chatbots or customer service",
+          "Other (please specify)"
         ],
-        "has_other": true,
+        "has_other": false,
         "scale_min": null,
         "scale_max": null,
         "scale_labels": [],
@@ -431,7 +433,7 @@
     {
       "persona_id": "P001",
       "persona_name": "Katie Brown",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -484,7 +486,7 @@
     {
       "persona_id": "P002",
       "persona_name": "Marta Costa",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -538,7 +540,7 @@
     {
       "persona_id": "P005",
       "persona_name": "Sara Ricci",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -592,7 +594,7 @@
     {
       "persona_id": "P006",
       "persona_name": "Francesca Bruno",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -647,7 +649,7 @@
     {
       "persona_id": "P008",
       "persona_name": "Francesco Lombardi",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -672,7 +674,7 @@
     {
       "persona_id": "P009",
       "persona_name": "Paola Ferrari",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -688,9 +690,7 @@
         "P9": [
           "Text generation (e.g. ChatGPT, Gemini, Claude, Copilot)",
           "Image or video creation (e.g. Midjourney, DALL·E, Canva AI)",
-          {
-            "other": "transcription"
-          }
+          "Other (please specify)"
         ],
         "P10": {
           "Audience and market analysis": "In some tasks",
@@ -731,7 +731,7 @@
     {
       "persona_id": "P010",
       "persona_name": "Lotte Vos",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -787,7 +787,7 @@
     {
       "persona_id": "P011",
       "persona_name": "Élodie Blanc",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -841,7 +841,7 @@
     {
       "persona_id": "P013",
       "persona_name": "Álvaro Vázquez",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -858,9 +858,7 @@
           "Text generation (e.g. ChatGPT, Gemini, Claude, Copilot)",
           "Image or video creation (e.g. Midjourney, DALL·E, Canva AI)",
           "AI in advertising or marketing automation systems",
-          {
-            "other": "translation (DeepL)"
-          }
+          "Other (please specify)"
         ],
         "P10": {
           "Audience and market analysis": "In some tasks",
@@ -898,7 +896,7 @@
     {
       "persona_id": "P014",
       "persona_name": "Svitlana Bondarenko",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -923,7 +921,7 @@
     {
       "persona_id": "P015",
       "persona_name": "Layla Saleh",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -978,7 +976,7 @@
     {
       "persona_id": "P016",
       "persona_name": "Lisa de Groot",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1003,7 +1001,7 @@
     {
       "persona_id": "P017",
       "persona_name": "Klara Lindström",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1056,7 +1054,7 @@
     {
       "persona_id": "P018",
       "persona_name": "Georgia Davies",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1113,7 +1111,7 @@
     {
       "persona_id": "P020",
       "persona_name": "Esra Arslan",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1128,9 +1126,7 @@
         "P8": "Every day",
         "P9": [
           "Text generation (e.g. ChatGPT, Gemini, Claude, Copilot)",
-          {
-            "other": "translation (DeepL)"
-          }
+          "Other (please specify)"
         ],
         "P10": {
           "Audience and market analysis": "I do not perform this type of task",
@@ -1169,7 +1165,7 @@
     {
       "persona_id": "P021",
       "persona_name": "Lina Olsson",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1224,7 +1220,7 @@
     {
       "persona_id": "P022",
       "persona_name": "Gregor Novak",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1278,7 +1274,7 @@
     {
       "persona_id": "P023",
       "persona_name": "Agnė Urbonaitė",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1286,9 +1282,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Lithuania",
-        "P4": {
-          "other": "e-commerce manager"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "1–3 years",
         "P6": "50–249 people",
         "P7": "Yes",
@@ -1336,7 +1330,7 @@
     {
       "persona_id": "P024",
       "persona_name": "Montserrat Ramos",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1391,7 +1385,7 @@
     {
       "persona_id": "P026",
       "persona_name": "Ainhoa Castro",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1447,7 +1441,7 @@
     {
       "persona_id": "P028",
       "persona_name": "Artem Kravchenko",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1501,7 +1495,7 @@
     {
       "persona_id": "P029",
       "persona_name": "Vinícius Cardoso Araújo",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1526,7 +1520,7 @@
     {
       "persona_id": "P030",
       "persona_name": "Levente Papp",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1580,7 +1574,7 @@
     {
       "persona_id": "P032",
       "persona_name": "Đorđe Živković",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1635,7 +1629,7 @@
     {
       "persona_id": "P034",
       "persona_name": "Ilze Jansone",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1691,7 +1685,7 @@
     {
       "persona_id": "P035",
       "persona_name": "Ainhoa Fernández López",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1746,7 +1740,7 @@
     {
       "persona_id": "P036",
       "persona_name": "Hanne Andreassen",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1800,7 +1794,7 @@
     {
       "persona_id": "P037",
       "persona_name": "Declan Murray",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1854,7 +1848,7 @@
     {
       "persona_id": "P038",
       "persona_name": "Mantas Butkus",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1909,7 +1903,7 @@
     {
       "persona_id": "P039",
       "persona_name": "Carolin Meyer",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -1917,9 +1911,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Germany",
-        "P4": {
-          "other": "graphic designer (promo materials)"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "4–6 years",
         "P6": "50–249 people",
         "P7": "Yes",
@@ -1965,7 +1957,7 @@
     {
       "persona_id": "P041",
       "persona_name": "Klára Marková",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2020,7 +2012,7 @@
     {
       "persona_id": "P042",
       "persona_name": "Sofia Mendes",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2076,7 +2068,7 @@
     {
       "persona_id": "P043",
       "persona_name": "Jan Hoffmann",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2131,7 +2123,7 @@
     {
       "persona_id": "P044",
       "persona_name": "Marco Pedrazzini",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2156,7 +2148,7 @@
     {
       "persona_id": "P045",
       "persona_name": "Viktoriia Kovalska",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2210,7 +2202,7 @@
     {
       "persona_id": "P046",
       "persona_name": "Lucy Williams",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2266,7 +2258,7 @@
     {
       "persona_id": "P047",
       "persona_name": "Anu Sepp",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2320,7 +2312,7 @@
     {
       "persona_id": "P048",
       "persona_name": "Duarte Correia Silva",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2377,7 +2369,7 @@
     {
       "persona_id": "P049",
       "persona_name": "Anna Steiner",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2433,7 +2425,7 @@
     {
       "persona_id": "P050",
       "persona_name": "Håkon Haugen",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2489,7 +2481,7 @@
     {
       "persona_id": "P051",
       "persona_name": "Nathalie Vincent",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2542,7 +2534,7 @@
     {
       "persona_id": "P053",
       "persona_name": "Francesca Romano",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2599,7 +2591,7 @@
     {
       "persona_id": "P054",
       "persona_name": "Jamie Scott",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2655,7 +2647,7 @@
     {
       "persona_id": "P055",
       "persona_name": "Marko Mitrović",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2663,9 +2655,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Serbia",
-        "P4": {
-          "other": "sales, with a lot of marketing on the side"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "4–6 years",
         "P6": "250 people or more",
         "P7": "Yes",
@@ -2712,7 +2702,7 @@
     {
       "persona_id": "P056",
       "persona_name": "Meera Rao",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2747,7 +2737,7 @@
     {
       "persona_id": "P058",
       "persona_name": "Roman Marchenko",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2801,7 +2791,7 @@
     {
       "persona_id": "P059",
       "persona_name": "Andreas Müller",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2856,7 +2846,7 @@
     {
       "persona_id": "P060",
       "persona_name": "Sara Rinaldi",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2913,7 +2903,7 @@
     {
       "persona_id": "P061",
       "persona_name": "Seán Brennan",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2948,7 +2938,7 @@
     {
       "persona_id": "P064",
       "persona_name": "Michael Köhler",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -2956,9 +2946,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Germany",
-        "P4": {
-          "other": "e-commerce manager"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "7–10 years",
         "P6": "10–49 people",
         "P7": "Yes",
@@ -3004,7 +2992,7 @@
     {
       "persona_id": "P065",
       "persona_name": "Petra Fischer",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3039,7 +3027,7 @@
     {
       "persona_id": "P066",
       "persona_name": "Olivier Durand",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3092,7 +3080,7 @@
     {
       "persona_id": "P067",
       "persona_name": "Thomas Aerts",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3146,7 +3134,7 @@
     {
       "persona_id": "P068",
       "persona_name": "Christos Nikolaou",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3204,7 +3192,7 @@
     {
       "persona_id": "P069",
       "persona_name": "Daniel Navarro",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3239,7 +3227,7 @@
     {
       "persona_id": "P070",
       "persona_name": "Ivan Tomić",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3295,7 +3283,7 @@
     {
       "persona_id": "P071",
       "persona_name": "Katja Kralj",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3351,7 +3339,7 @@
     {
       "persona_id": "P072",
       "persona_name": "Seraina Meyer",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3408,7 +3396,7 @@
     {
       "persona_id": "P073",
       "persona_name": "Joris Verstraeten",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3464,7 +3452,7 @@
     {
       "persona_id": "P074",
       "persona_name": "Viktoriia Rudenko",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3520,7 +3508,7 @@
     {
       "persona_id": "P075",
       "persona_name": "Petra Kráľová",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3528,9 +3516,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Slovakia",
-        "P4": {
-          "other": "sales, with a lot of marketing on the side"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "More than 10 years",
         "P6": "250 people or more",
         "P7": "Yes",
@@ -3579,7 +3565,7 @@
     {
       "persona_id": "P076",
       "persona_name": "Elisabeth Mayer",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3634,7 +3620,7 @@
     {
       "persona_id": "P077",
       "persona_name": "Laura Mariani",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3688,7 +3674,7 @@
     {
       "persona_id": "P078",
       "persona_name": "Wouter Hendriks",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3744,7 +3730,7 @@
     {
       "persona_id": "P080",
       "persona_name": "Maximilian Lehmann",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3797,7 +3783,7 @@
     {
       "persona_id": "P081",
       "persona_name": "Charlotte Smith",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3852,7 +3838,7 @@
     {
       "persona_id": "P082",
       "persona_name": "Iva Blažević",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3887,7 +3873,7 @@
     {
       "persona_id": "P083",
       "persona_name": "Katrien Claes",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3944,7 +3930,7 @@
     {
       "persona_id": "P084",
       "persona_name": "Dan Stoica",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -3998,7 +3984,7 @@
     {
       "persona_id": "P086",
       "persona_name": "Teodora Vasileva",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4033,7 +4019,7 @@
     {
       "persona_id": "P087",
       "persona_name": "Frida Sandberg",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4089,7 +4075,7 @@
     {
       "persona_id": "P088",
       "persona_name": "Silvia Martín",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4124,7 +4110,7 @@
     {
       "persona_id": "P089",
       "persona_name": "Judit Mészáros",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4132,9 +4118,7 @@
         "P1": "Yes",
         "P2": "Yes",
         "P3": "Hungary",
-        "P4": {
-          "other": "PR / communications"
-        },
+        "P4": "Other marketing-related role (please specify)",
         "P5": "More than 10 years",
         "P6": "Difficult to say / not applicable",
         "P7": "Yes",
@@ -4181,7 +4165,7 @@
     {
       "persona_id": "P090",
       "persona_name": "Petra Černá",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4235,7 +4219,7 @@
     {
       "persona_id": "P091",
       "persona_name": "Bianca Ionescu",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4290,7 +4274,7 @@
     {
       "persona_id": "P092",
       "persona_name": "Riikka Korhonen",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4344,7 +4328,7 @@
     {
       "persona_id": "P093",
       "persona_name": "Lukas Schwarz",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4401,7 +4385,7 @@
     {
       "persona_id": "P094",
       "persona_name": "Dimitris Papadakis",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4454,7 +4438,7 @@
     {
       "persona_id": "P095",
       "persona_name": "Laura Turunen",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4489,7 +4473,7 @@
     {
       "persona_id": "P096",
       "persona_name": "Jakub Kollár",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4546,7 +4530,7 @@
     {
       "persona_id": "P097",
       "persona_name": "Louise Mortensen",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4599,7 +4583,7 @@
     {
       "persona_id": "P098",
       "persona_name": "Inès Simon",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4657,7 +4641,7 @@
     {
       "persona_id": "P099",
       "persona_name": "Kristina Nikolova",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,
@@ -4711,7 +4695,7 @@
     {
       "persona_id": "P100",
       "persona_name": "Sinéad Keane",
-      "generated_at": "2026-09-24T21:55:02+00:00",
+      "generated_at": "2026-09-24T22:20:10+00:00",
       "synthetic": true,
       "mode": "offline",
       "model": null,

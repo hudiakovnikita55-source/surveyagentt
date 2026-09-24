@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Synthetic survey respondents: realistic European personas that fill in questionnaires"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["anthropic>=1.8", "requests>=2.31", "PyYAML>=6.0"]
+dependencies = ["anthropic>=1.8", "requests>=2.31", "PyYAML>=6.0", "openpyxl>=3.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

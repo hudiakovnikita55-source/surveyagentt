@@ -12,6 +12,12 @@ Output: one row per respondent, values translated into the labels of a reference
   "only this answer" option was ticked together with others), grids -> <id>_1..<id>_n, text -> <id>
   (+ <id>_country with the country name in English for the work-country question).
 A codebook CSV next to it lists every column with the question, row and option labels.
+
+`write_google_sheet` writes the same responses in the layout of a Google Sheet linked to ONE form whose first
+question picks the language and whose sections hold the language versions: sheet "Form Responses 1"
+(Timestamp, language, then every version's columns side by side, filled only for the chosen language) and
+sheet "Combined data" (Timestamp, Language, one column per question in the reference labels; multi-select
+joined with " | ", grids as JSON). A CSV export of such a sheet can be read back with one --input per version.
 """
 
 from __future__ import annotations
@@ -21,6 +27,7 @@ import difflib
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +36,9 @@ from .questionnaire import CHOICE_TYPES, END, GRID_TYPES, SCALE_TYPES, Questionn
 
 TIMESTAMP_HEADERS = {"timestamp", "sygnatura czasowa", "znacznik czasu", "отметка времени", "zeitstempel",
                      "horodateur", "marca temporal", "generated_at"}
+# How a version is named in a "choose your language" question.
+LANGUAGE_LABELS = {"PL": "Polski", "EN": "English", "RU": "Русский", "UK": "Українська", "DE": "Deutsch",
+                   "FR": "Français", "ES": "Español", "IT": "Italiano"}
 
 
 @dataclass
@@ -108,6 +118,8 @@ def rows_from_export(questionnaire: Questionnaire, path: str | Path, warnings: l
     rows = []
     for n, cells in enumerate(body, 1):
         cells = cells + [""] * (len(header) - len(cells))
+        if not any(cells[i].strip() for i in used):
+            continue  # a respondent of another language version of the same form
         answers = {}
         for q in questionnaire.questions:
             spec = columns[q.id]
@@ -139,7 +151,7 @@ def _split_multi(cell: str, options: list[str]) -> tuple[list[str], str]:
 
 
 def parse_cell(q, cell: str):
-    cell = (cell or "").strip()
+    raw, cell = cell or "", (cell or "").strip()
     if not cell:
         return None
     if q.type in CHOICE_TYPES:
@@ -153,7 +165,7 @@ def parse_cell(q, cell: str):
             return int(float(cell))
         except ValueError:
             return cell
-    return cell
+    return raw  # free text exactly as typed (Google keeps trailing spaces too)
 
 
 # --------------------------------------------------------------------------- #
@@ -252,20 +264,27 @@ def merged_record(reference: Questionnaire, answers: dict) -> dict:
     return out
 
 
-def merge(inputs: list[tuple[Questionnaire, str | Path]], reference: Questionnaire | None = None,
-          warnings: list[str] | None = None) -> tuple[Questionnaire, list[dict]]:
-    """Returns (reference questionnaire, merged rows)."""
+def collect(inputs: list[tuple[Questionnaire, str | Path]], reference: Questionnaire | None = None,
+            warnings: list[str] | None = None) -> tuple[Questionnaire, list[tuple[Row, Questionnaire, dict]]]:
+    """Load every input; returns (reference, [(row, its questionnaire, answers in reference labels)])."""
     warnings = [] if warnings is None else warnings
     if reference is None:
         reference = next((q for q, _ in inputs if q.language == "EN"), inputs[0][0])
-    records = []
+    out = []
     for questionnaire, path in inputs:
         check_aligned(reference, questionnaire)
         for row in load_rows(questionnaire, path, warnings):
-            answers = translate_row(row, questionnaire, reference)
-            records.append({"respondent_id": row.respondent_id, "language": row.language,
-                            "submitted_at": row.submitted_at, "synthetic": "yes" if row.synthetic else "no",
-                            "status": _status(reference, answers), **merged_record(reference, answers)})
+            out.append((row, questionnaire, translate_row(row, questionnaire, reference)))
+    return reference, out
+
+
+def merge(inputs: list[tuple[Questionnaire, str | Path]], reference: Questionnaire | None = None,
+          warnings: list[str] | None = None) -> tuple[Questionnaire, list[dict]]:
+    """Returns (reference questionnaire, merged rows)."""
+    reference, rows = collect(inputs, reference, warnings)
+    records = [{"respondent_id": row.respondent_id, "language": row.language, "submitted_at": row.submitted_at,
+                "synthetic": "yes" if row.synthetic else "no", "status": _status(reference, answers),
+                **merged_record(reference, answers)} for row, _, answers in rows]
     return reference, records
 
 
@@ -301,3 +320,107 @@ def write_merged(path: str | Path, reference: Questionnaire, records: list[dict]
                 values = "text" if q.type not in SCALE_TYPES else f"{q.scale_min}..{q.scale_max}"
             writer.writerow([name, qid, q.title, what, values])
     return codebook
+
+
+# --------------------------------------------------------------------------- #
+# Google-Sheet layout of a single multi-language form
+# --------------------------------------------------------------------------- #
+
+def _to_datetime(text: str):
+    text = str(text or "").strip()
+    for parse in (lambda t: datetime.fromisoformat(t).replace(tzinfo=None),
+                  lambda t: datetime.strptime(t.split(" GMT")[0], "%m/%d/%Y %H:%M:%S"),
+                  lambda t: datetime.strptime(t.split(" GMT")[0], "%Y/%m/%d %I:%M:%S %p"),
+                  lambda t: datetime.strptime(t, "%d.%m.%Y %H:%M:%S")):
+        try:
+            return parse(text)
+        except ValueError:
+            continue
+    return text or None
+
+
+def _own_value(q, value):
+    """A cell as Google Forms writes it into the responses sheet."""
+    if value is None:
+        return None
+    if isinstance(value, dict) and set(value) == {"other"}:
+        return value["other"]
+    if isinstance(value, list):
+        return ", ".join(v["other"] if isinstance(v, dict) else str(v) for v in value) or None
+    return value
+
+
+def _combined_value(q, value):
+    if value is None:
+        return None
+    if q.type in GRID_TYPES:
+        cells = {row: value[row] for row in q.rows if row in value}
+        return json.dumps(cells, ensure_ascii=False, separators=(",", ":")) if cells else None
+    if isinstance(value, list):
+        return " | ".join(v["other"] if isinstance(v, dict) else str(v) for v in value) or None
+    if isinstance(value, dict) and set(value) == {"other"}:
+        return value["other"]
+    return value
+
+
+def write_google_sheet(path: str | Path, reference: Questionnaire, rows: list[tuple[Row, Questionnaire, dict]],
+                       versions: list[Questionnaire], language_question: str = "Language") -> Path:
+    """Writes an .xlsx with the sheets "Form Responses 1" and "Combined data" (see the module docstring).
+
+    `versions` gives the order of the language blocks, as in the form. A "synthetic" column is added at the end
+    of both sheets (and an explanatory sheet) when any row was generated rather than answered by a person.
+    """
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    synthetic = any(row.synthetic for row, _, _ in rows)
+    ordered = sorted(rows, key=lambda r: (not isinstance(_to_datetime(r[0].submitted_at), datetime),
+                                          str(_to_datetime(r[0].submitted_at))))
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Form Responses 1"
+    header = ["Timestamp", language_question]
+    for version in versions:
+        for q in version.questions:
+            if q.type in GRID_TYPES:
+                header += [f"{q.id}. {q.title} [{row}]" for row in q.rows]
+            else:
+                header.append(f"{q.id}. {q.title}")
+    ws.append(header + (["synthetic"] if synthetic else []))
+    for row, source, _ in ordered:
+        line = [_to_datetime(row.submitted_at), LANGUAGE_LABELS.get(row.language, row.language)]
+        for version in versions:
+            for q in version.questions:
+                value = row.answers.get(q.id) if version is source else None
+                if q.type in GRID_TYPES:
+                    line += [(value or {}).get(r) for r in q.rows]
+                else:
+                    line.append(_own_value(q, value))
+        ws.append(line + (["yes" if row.synthetic else "no"] if synthetic else []))
+
+    wc = wb.create_sheet("Combined data")
+    wc.append(["Timestamp", "Language"] + [q.id for q in reference.questions] + (["synthetic"] if synthetic else []))
+    for row, _, answers in ordered:
+        line = [_to_datetime(row.submitted_at), row.language]
+        line += [_combined_value(q, answers.get(q.id)) for q in reference.questions]
+        wc.append(line + (["yes" if row.synthetic else "no"] if synthetic else []))
+
+    for sheet in (ws, wc):
+        sheet.freeze_panes = "A2"
+        for cell in sheet[1]:
+            cell.font = Font(bold=True)
+        for cell in sheet["A"][1:]:
+            cell.number_format = "m/d/yyyy h:mm:ss"
+        sheet.column_dimensions["A"].width = 19
+    if synthetic:
+        note = wb.create_sheet("About this file")
+        note.append(["SYNTHETIC DATA / ДАННЫЕ СГЕНЕРИРОВАНЫ"])
+        note.append(["Rows with synthetic = yes were generated by surveyagent for fictional personas. "
+                     "They are test data for building the analysis, not survey responses."])
+        note.append(["Строки с synthetic = yes сгенерированы программой от имени вымышленных персон. "
+                     "Это тестовые данные для подготовки анализа, а не ответы участников опроса."])
+        note["A1"].font = Font(bold=True, color="9C0006")
+    wb.save(path)
+    return path

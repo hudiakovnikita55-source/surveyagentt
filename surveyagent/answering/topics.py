@@ -88,11 +88,9 @@ OTHER_ROLE_TEXT = {
 
 def _setting(c: _Context):
     setting = c.m["setting"]
-    if setting == "other":
-        if c.q.has_other:
-            return {"other": c.text(OTHER_ROLE_TEXT[c.m["other_role"]])}
-        setting = "in_house"
-    return c.option(["agency", "in_house", "freelance", "own_business"].index(setting))
+    if setting == "other" and c.q.has_other:  # a form with an "Other:" text field
+        return {"other": c.text(OTHER_ROLE_TEXT[c.m["other_role"]])}
+    return c.option(["agency", "in_house", "freelance", "own_business", "other"].index(setting))
 
 
 def _years(c: _Context):
@@ -141,10 +139,10 @@ def _tool_types(c: _Context):
     chosen = [c.option(i) for i, kind in enumerate(("text", "visual", "ads", "analytics", "chatbot")) if kind in kinds]
     if c.p.style["engagement"] == "rushed":
         chosen = chosen[:2]
-    if "other" in kinds and c.q.has_other and c.rng.random() < 0.3:
+    if "other" in kinds and c.rng.random() < 0.3:  # "Other (please specify)" as the last option
         tool = next(t for t in c.p.ai["tools"] if t in work.TOOL_KINDS["other"])
         key = tool if tool in OTHER_TOOL_TEXT else "transcription"
-        chosen.append({"other": c.text(OTHER_TOOL_TEXT[key])})
+        chosen.append({"other": c.text(OTHER_TOOL_TEXT[key])} if c.q.has_other else c.option(5))
     return chosen or [c.option(0)]
 
 
@@ -385,8 +383,8 @@ HANDLERS = {
 }
 # Expected (number of options, number of rows) per topic; other shapes fall back to the generic heuristics.
 SHAPES = {
-    "consent": (2, 0), "did_marketing": (2, 0), "work_country": (0, 0), "marketing_setting": (4, 0),
-    "marketing_years": (5, 0), "org_size": (6, 0), "ai_use": (2, 0), "ai_frequency": (5, 0), "ai_tool_types": (5, 0),
+    "consent": (2, 0), "did_marketing": (2, 0), "work_country": (0, 0), "marketing_setting": (5, 0),
+    "marketing_years": (5, 0), "org_size": (6, 0), "ai_use": (2, 0), "ai_frequency": (5, 0), "ai_tool_types": (6, 0),
     "ai_task_use": (6, 8), "ai_effects": (6, 5), "ai_barriers": (6, 7), "ai_risk_practices": (8, 0),
     "ai_training": (3, 0), "ai_open_view": (0, 0),
 }

@@ -142,14 +142,18 @@ def cmd_answer(args) -> None:
         if group:
             generate_responses(form, group, path, **run)
             inputs.append((form, path))
-    _write_merged(inputs, out.with_name(f"{out.stem}_merged.csv"))
+    _write_merged(inputs, out.with_name(f"{out.stem}_merged.csv"), sheet=out.with_name(f"{out.stem}_sheet.xlsx"),
+                  versions=forms, language_question=args.language_question)
 
 
-def _write_merged(inputs, out_path, reference=None) -> None:
-    from .merge import merge, write_merged
+def _write_merged(inputs, out_path, reference=None, sheet=None, versions=None, language_question="Language") -> None:
+    from .merge import _status, collect, merged_record, write_google_sheet, write_merged
 
     warnings: list[str] = []
-    reference, records = merge(inputs, reference=reference, warnings=warnings)
+    reference, rows = collect(inputs, reference=reference, warnings=warnings)
+    records = [{"respondent_id": row.respondent_id, "language": row.language, "submitted_at": row.submitted_at,
+                "synthetic": "yes" if row.synthetic else "no", "status": _status(reference, answers),
+                **merged_record(reference, answers)} for row, _, answers in rows]
     codebook = write_merged(out_path, reference, records)
     for w in warnings:
         print(f"  warning: {w}")
@@ -157,6 +161,9 @@ def _write_merged(inputs, out_path, reference=None) -> None:
     status = Counter(r["status"] for r in records)
     print(f"\nMerged {len(records)} responses ({', '.join(f'{k} {v}' for k, v in by_lang.items())}; "
           f"{', '.join(f'{k} {v}' for k, v in status.items())}) -> {out_path}\nCodebook -> {codebook}")
+    if sheet:
+        write_google_sheet(sheet, reference, rows, versions or [q for q, _ in inputs], language_question)
+        print(f"Google Sheet layout (Form Responses 1 + Combined data) -> {sheet}")
 
 
 def cmd_merge(args) -> None:
@@ -164,7 +171,7 @@ def cmd_merge(args) -> None:
 
     inputs = [(load_questionnaire(form), data) for form, data in args.input]
     reference = load_questionnaire(args.reference) if args.reference else None
-    _write_merged(inputs, args.out, reference)
+    _write_merged(inputs, args.out, reference, sheet=args.sheet, language_question=args.language_question)
 
 
 def cmd_submit(args) -> None:
@@ -240,6 +247,8 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--out", default="output/responses.json")
     p.add_argument("--resume", action="store_true", help="keep existing responses in --out, answer the rest")
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--language-question", default="Language",
+                   help="header of the language column in <out>_sheet.xlsx (several --form files only)")
     p.set_defaults(func=cmd_answer)
 
     p = sub.add_parser("merge", help="merge language versions (synthetic .json or real CSV exports) into one table")
@@ -248,6 +257,9 @@ def main(argv: list[str] | None = None) -> None:
                         "CSV export from Google Forms/Sheets); repeat for every version")
     p.add_argument("--reference", help="version whose labels the merged table uses (default: the EN one)")
     p.add_argument("--out", default="output/merged.csv")
+    p.add_argument("--sheet", help="also write an .xlsx in the layout of the form's Google Sheet "
+                                   "(Form Responses 1 + Combined data); language blocks follow the --input order")
+    p.add_argument("--language-question", default="Language", help="header of the language column in --sheet")
     p.set_defaults(func=cmd_merge)
 
     p = sub.add_parser("submit", help="submit generated responses to the Google Form (dry run by default)")
