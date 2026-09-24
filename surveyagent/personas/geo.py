@@ -686,3 +686,79 @@ COUNTRY_HOBBIES = {
     "DE": ["cycling", "hiking"], "BE": ["cycling", "comic books"], "HR": ["sailing", "water polo"],
     "SI": ["climbing", "hiking"], "LT": ["basketball"], "LV": ["ice hockey"], "EE": ["cross-country skiing"],
 }
+
+# How people write the country names in the other survey languages (first = most common spelling).
+LOCAL_COUNTRY_NAMES = {
+    "EN": {"United Kingdom": ["United Kingdom", "UK", "England"], "Netherlands": ["Netherlands", "The Netherlands"],
+           "Czechia": ["Czech Republic", "Czechia"]},
+    "PL": {
+        "Austria": ["Austria"], "Belgium": ["Belgia"], "Bulgaria": ["Bułgaria"], "Croatia": ["Chorwacja"],
+        "Cyprus": ["Cypr"], "Czechia": ["Czechy"], "Denmark": ["Dania"], "Estonia": ["Estonia"],
+        "Finland": ["Finlandia"], "France": ["Francja"], "Germany": ["Niemcy"], "Greece": ["Grecja"],
+        "Hungary": ["Węgry"], "Iceland": ["Islandia"], "Ireland": ["Irlandia"], "Italy": ["Włochy"],
+        "Latvia": ["Łotwa"], "Lithuania": ["Litwa"], "Luxembourg": ["Luksemburg"], "Malta": ["Malta"],
+        "Netherlands": ["Holandia", "Niderlandy"], "Norway": ["Norwegia"], "Poland": ["Polska"],
+        "Portugal": ["Portugalia"], "Romania": ["Rumunia"], "Serbia": ["Serbia"], "Slovakia": ["Słowacja"],
+        "Slovenia": ["Słowenia"], "Spain": ["Hiszpania"], "Sweden": ["Szwecja"], "Switzerland": ["Szwajcaria"],
+        "Ukraine": ["Ukraina"], "United Kingdom": ["Wielka Brytania", "UK", "Anglia"],
+    },
+    "RU": {
+        "Austria": ["Австрия"], "Belgium": ["Бельгия"], "Bulgaria": ["Болгария"], "Croatia": ["Хорватия"],
+        "Cyprus": ["Кипр"], "Czechia": ["Чехия"], "Denmark": ["Дания"], "Estonia": ["Эстония"],
+        "Finland": ["Финляндия"], "France": ["Франция"], "Germany": ["Германия"], "Greece": ["Греция"],
+        "Hungary": ["Венгрия"], "Iceland": ["Исландия"], "Ireland": ["Ирландия"], "Italy": ["Италия"],
+        "Latvia": ["Латвия"], "Lithuania": ["Литва"], "Luxembourg": ["Люксембург"], "Malta": ["Мальта"],
+        "Netherlands": ["Нидерланды", "Голландия"], "Norway": ["Норвегия"], "Poland": ["Польша"],
+        "Portugal": ["Португалия"], "Romania": ["Румыния"], "Serbia": ["Сербия"], "Slovakia": ["Словакия"],
+        "Slovenia": ["Словения"], "Spain": ["Испания"], "Sweden": ["Швеция"], "Switzerland": ["Швейцария"],
+        "Ukraine": ["Украина"], "United Kingdom": ["Великобритания", "Англия"],
+    },
+}
+
+# Survey-language codes and the language names used in persona profiles.
+LANGUAGE_CODES = {"EN": "English", "PL": "Polish", "RU": "Russian", "DE": "German", "FR": "French",
+                  "ES": "Spanish", "IT": "Italian", "UK": "Ukrainian", "PT": "Portuguese", "NL": "Dutch"}
+
+
+def country_name(name: str, language: str, rng=None) -> str:
+    """The persona's country as a respondent would type it in a `language` questionnaire."""
+    variants = LOCAL_COUNTRY_NAMES.get(language.upper(), {}).get(name, [name])
+    if rng is None:
+        return variants[0]
+    r = rng.random()  # always exactly one draw, so the rest of a response does not depend on the language
+    if len(variants) == 1 or r < 0.7:
+        return variants[0]
+    return variants[1 + min(len(variants) - 2, int((r - 0.7) / 0.3 * (len(variants) - 1)))]
+
+
+def normalize_country(text: str) -> str | None:
+    """'Polska', 'польша', 'the Netherlands', 'UK' -> English country name; None if unknown."""
+    key = " ".join(str(text).strip().strip(".").lower().split())
+    if not key:
+        return None
+    for name in (c["name"] for c in COUNTRIES.values()):
+        if key == name.lower():
+            return name
+    for table in LOCAL_COUNTRY_NAMES.values():
+        for name, variants in table.items():
+            if key in (v.lower() for v in variants):
+                return name
+    return OTHER_COUNTRY_SPELLINGS.get(key)
+
+
+# Spellings seen in real answers that the tables above do not cover (incl. countries outside the persona set).
+OTHER_COUNTRY_SPELLINGS = {
+    "great britain": "United Kingdom", "britain": "United Kingdom", "scotland": "United Kingdom",
+    "wales": "United Kingdom", "holland": "Netherlands", "czech republic": "Czechia", "pl": "Poland",
+    "de": "Germany", "ua": "Ukraine", "uk": "United Kingdom",
+    "russia": "Russia", "россия": "Russia", "рф": "Russia", "rosja": "Russia",
+    "belarus": "Belarus", "беларусь": "Belarus", "белоруссия": "Belarus", "białoruś": "Belarus",
+    "georgia": "Georgia", "грузия": "Georgia", "gruzja": "Georgia",
+    "kazakhstan": "Kazakhstan", "казахстан": "Kazakhstan", "kazachstan": "Kazakhstan",
+    "moldova": "Moldova", "молдова": "Moldova", "молдавия": "Moldova", "mołdawia": "Moldova",
+    "armenia": "Armenia", "армения": "Armenia", "turkey": "Turkey", "türkiye": "Turkey", "турция": "Turkey",
+    "turcja": "Turkey", "usa": "United States", "united states": "United States", "сша": "United States",
+    "stany zjednoczone": "United States", "israel": "Israel", "израиль": "Israel", "izrael": "Israel",
+    "uae": "United Arab Emirates", "оаэ": "United Arab Emirates", "canada": "Canada", "канада": "Canada",
+    "kanada": "Canada", "remote": None,
+}

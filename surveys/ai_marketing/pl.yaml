@@ -1,0 +1,186 @@
+# "Wykorzystanie AI w marketingu i promocji" - wersja PL.
+# Te same kody (P1-P15), kolejność odpowiedzi i logika co w en.yaml i ru.yaml.
+title: "ANKIETA: Wykorzystanie AI w marketingu i promocji"
+language: PL
+description: >
+  Ankieta jest częścią międzynarodowego badania. Jest skierowana do osób, które w ciągu ostatnich
+  12 miesięcy zajmowały się marketingiem lub promocją, niezależnie od kraju wykonywania pracy.
+  Udział jest dobrowolny i anonimowy. Nie zbieramy danych umożliwiających bezpośrednią identyfikację.
+  Wyniki będą analizowane wyłącznie zbiorczo. Wypełnienie ankiety zajmuje około 5–6 minut.
+  W ankiecie „AI” oznacza narzędzia takie jak ChatGPT, Gemini, Claude, Copilot, Canva AI oraz funkcje AI
+  w systemach reklamowych i marketingowych.
+questions:
+  # I. Zgoda i kwalifikacja
+  - id: P1
+    section: I. Zgoda i kwalifikacja
+    topic: consent
+    title: Czy wyraża Pan/Pani zgodę na dobrowolny udział w anonimowym badaniu?
+    type: single_choice
+    required: true
+    options: ["Tak", "Nie"]
+    go_to: {"Nie": end}
+
+  - id: P2
+    section: I. Zgoda i kwalifikacja
+    topic: did_marketing
+    title: Czy w ciągu ostatnich 12 miesięcy zajmował(a) się Pan/Pani marketingiem lub promocją?
+    type: single_choice
+    required: true
+    options: ["Tak", "Nie"]
+    go_to: {"Nie": end}
+
+  # II. Informacje o respondencie
+  - id: P3
+    section: II. Informacje o respondencie
+    topic: work_country
+    title: W jakim kraju wykonuje Pan/Pani większość pracy związanej z marketingiem lub promocją?
+    type: short_text
+    required: true
+
+  - id: P4
+    section: II. Informacje o respondencie
+    topic: marketing_setting
+    title: Która odpowiedź najlepiej opisuje Pana/Pani pracę?
+    type: single_choice
+    required: true
+    options:
+      - Pracuję w agencji marketingowej lub reklamowej
+      - Pracuję w dziale marketingu firmy lub organizacji
+      - Pracuję jako freelancer/freelancerka
+      - Prowadzę własną firmę i samodzielnie zajmuję się marketingiem
+    other: true  # "Inna rola związana z marketingiem (jaka?)"
+
+  - id: P5
+    section: II. Informacje o respondencie
+    topic: marketing_years
+    title: Jak długo pracuje Pan/Pani w marketingu lub promocji?
+    type: single_choice
+    required: true
+    options: [Mniej niż 1 rok, 1–3 lata, 4–6 lat, 7–10 lat, Powyżej 10 lat]
+
+  - id: P6
+    section: II. Informacje o respondencie
+    topic: org_size
+    title: Ile osób pracuje w organizacji, dla której wykonuje Pan/Pani większość działań marketingowych?
+    type: single_choice
+    required: true
+    options:
+      - Pracuję samodzielnie / firma jednoosobowa
+      - 2–9 osób
+      - 10–49 osób
+      - 50–249 osób
+      - 250 osób lub więcej
+      - Trudno powiedzieć / nie dotyczy
+
+  # III. Wykorzystanie AI
+  - id: P7
+    section: III. Wykorzystanie AI
+    topic: ai_use
+    title: Czy w ciągu ostatnich 12 miesięcy korzystał(a) Pan/Pani z AI w pracy marketingowej lub promocyjnej?
+    type: single_choice
+    required: true
+    options: ["Tak", "Nie"]
+    go_to: {"Nie": P12}
+
+  - id: P8
+    section: III. Wykorzystanie AI
+    topic: ai_frequency
+    title: Jak często korzysta Pan/Pani z AI w pracy marketingowej lub promocyjnej?
+    type: single_choice
+    required: true
+    options: [Codziennie, Kilka razy w tygodniu, Raz w tygodniu, Kilka razy w miesiącu, Rzadziej niż raz w miesiącu]
+
+  - id: P9
+    section: III. Wykorzystanie AI
+    topic: ai_tool_types
+    title: Z jakich rodzajów narzędzi AI korzysta Pan/Pani?
+    type: checkboxes
+    required: true
+    options:
+      - Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)
+      - Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)
+      - AI w systemach reklamowych lub automatyzacji marketingu
+      - Analityka, prognozowanie lub segmentacja odbiorców
+      - Chatboty lub obsługa klienta
+    other: true  # "Inne (jakie?)"
+
+  - id: P10
+    section: III. Wykorzystanie AI
+    topic: ai_task_use
+    title: Do jakich zadań marketingowych wykorzystuje Pan/Pani AI?
+    type: grid
+    required: true
+    rows:
+      - Analiza odbiorców i rynku
+      - Planowanie strategii, celów i KPI
+      - Segmentacja, tworzenie person i personalizacja
+      - Pisanie treści promocyjnych
+      - Tworzenie lub edycja obrazów i wideo
+      - Prowadzenie lub optymalizacja kampanii reklamowych
+      - Kontakt z odbiorcami, obsługa klienta i chatboty
+      - Analiza wyników i raportowanie
+    options: [Nigdy, W niewielu zadaniach, W części zadań, W większości zadań, Prawie zawsze, Nie wykonuję takich zadań]
+
+  # IV. Efekty, bariery i odpowiedzialne korzystanie
+  - id: P11
+    section: IV. Efekty, bariery i odpowiedzialne korzystanie
+    topic: ai_effects
+    title: Na ile zgadza się Pan/Pani z poniższymi zdaniami?
+    type: grid
+    required: true
+    rows:
+      - Dzięki AI szybciej wykonuję zadania marketingowe
+      - AI pomaga mi lepiej dopasować komunikację do odbiorców
+      - AI pomaga mi tworzyć więcej pomysłów i treści
+      - AI ułatwia analizę danych i podejmowanie decyzji
+      - AI poprawia jakość przygotowywanych materiałów
+    options: [Zdecydowanie się nie zgadzam, Raczej się nie zgadzam, "Ani się zgadzam, ani nie zgadzam", Raczej się zgadzam, Zdecydowanie się zgadzam, Trudno powiedzieć]
+
+  - id: P12
+    section: IV. Efekty, bariery i odpowiedzialne korzystanie
+    topic: ai_barriers
+    title: Jak dużą przeszkodą są dla Pana/Pani poniższe kwestie?
+    type: grid
+    required: true
+    rows:
+      - Nieprawidłowe lub zmyślone odpowiedzi AI
+      - Ochrona danych i poufność
+      - Prawa autorskie i zgodność z prawem
+      - Treści niedopasowane do stylu lub jakości marki
+      - Stronnicze lub dyskryminujące odpowiedzi
+      - Brak umiejętności lub jasnych procedur
+      - Koszty albo trudności wdrożenia i integracji
+    options: [Nie stanowi bariery, Mała bariera, Umiarkowana bariera, Duża bariera, Bardzo duża bariera, Trudno powiedzieć]
+
+  - id: P13
+    section: IV. Efekty, bariery i odpowiedzialne korzystanie
+    topic: ai_risk_practices
+    title: Co robi Pan/Pani lub Pana/Pani organizacja, aby ograniczyć ryzyko związane z AI?
+    type: checkboxes
+    required: true
+    options:
+      - Treści są sprawdzane przez człowieka
+      - Nie wprowadzamy do AI danych poufnych ani osobowych
+      - Sprawdzamy fakty i źródła
+      - Materiały zatwierdza przełożony lub klient
+      - Stosujemy szkolenia lub wewnętrzne zasady dotyczące AI
+      - Informujemy o użyciu AI, gdy jest to wymagane
+      - Nie stosujemy formalnych praktyk
+      - Nie korzystam z AI / nie dotyczy — proszę wybrać tylko tę odpowiedź
+    exclusive: [Nie korzystam z AI / nie dotyczy — proszę wybrać tylko tę odpowiedź]
+
+  - id: P14
+    section: IV. Efekty, bariery i odpowiedzialne korzystanie
+    topic: ai_training
+    title: Czy uczestniczył(a) Pan/Pani w szkoleniu dotyczącym wykorzystania AI w marketingu lub komunikacji?
+    type: single_choice
+    required: true
+    options: ["Tak", "Nie, ale planuję", "Nie i nie planuję"]
+
+  # V. Pytanie otwarte
+  - id: P15
+    section: V. Pytanie otwarte
+    topic: ai_open_view
+    title: Jeśli chce Pan/Pani, proszę krótko opisać jedną korzyść, jeden problem lub jeden warunek odpowiedzialnego wykorzystania AI w marketingu.
+    type: paragraph
+    required: false

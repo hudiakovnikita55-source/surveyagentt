@@ -10,7 +10,7 @@ import json
 from datetime import date
 
 from ..personas.generator import Persona, persona_card
-from ..questionnaire import CHOICE_TYPES, GRID_TYPES, SCALE_TYPES, TEXT_TYPES, Question, Questionnaire
+from ..questionnaire import CHOICE_TYPES, END, GRID_TYPES, SCALE_TYPES, TEXT_TYPES, Question, Questionnaire
 
 DEFAULT_MODEL = "claude-opus-5"
 DEFAULT_EFFORT = "medium"
@@ -57,6 +57,10 @@ write at their level and follow their writing notes (slips typical of their firs
 keep them natural and occasional). Do not add spelling typos on purpose; that is handled separately.
 
 Skipping
+- Some questions have "logic" lines (e.g. "No" -> end of survey, or skip to a later question). Follow \
+them like a real respondent: questions you would not be shown must be null. Only those questions may \
+be null.
+- Some multi-select options must be ticked alone; never combine them with other options.
 - Required questions must always be answered.
 - Optional questions: careful respondents answer nearly all of them, rushed ones often skip optional open \
 questions. Use the skip probability from the profile as a rough guide. Put the ids of skipped questions in \
@@ -82,6 +86,8 @@ TYPE_LABELS = {
 
 def render_questionnaire(q: Questionnaire) -> str:
     lines = [f'QUESTIONNAIRE: "{q.title}"']
+    if q.language:
+        lines.append(f"Language of this version: {q.language}")
     if q.description:
         lines.append(q.description)
     section = None
@@ -108,6 +114,11 @@ def render_questionnaire(q: Questionnaire) -> str:
             lines.append("    columns: " + " | ".join(f'"{o}"' for o in question.options))
         elif question.options and question.type not in SCALE_TYPES:
             lines.append("    options: " + " | ".join(f'"{o}"' for o in question.options))
+        for option, target in question.go_to.items():
+            where = "end of survey" if target == END else f"skip to [{target}]"
+            lines.append(f'    logic: "{option}" -> {where}')
+        for option in question.exclusive:
+            lines.append(f'    "{option}" must be the only selected option')
     return "\n".join(lines)
 
 
@@ -137,10 +148,14 @@ def _question_schema(q: Question) -> dict:
 def build_schema(q: Questionnaire) -> dict:
     """JSON schema for one complete response. Every field is required (skips are listed in "skipped")."""
     properties: dict = {}
+    conditional = q.conditional_ids()
     for question in q.questions:
         if question.type == "email":
             continue
-        properties[question.id] = _question_schema(question)
+        schema = _question_schema(question)
+        if question.id in conditional:  # null = not shown because of the form's logic
+            schema = {"anyOf": [schema, {"type": "null"}]}
+        properties[question.id] = schema
         if question.has_other and question.type in CHOICE_TYPES | {"checkboxes"}:
             properties[f"{question.id}__other"] = {"type": "string"}
     optional = [x.id for x in q.questions if not x.required and x.type != "email"]

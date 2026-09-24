@@ -28,11 +28,27 @@ def _load_questionnaire(source: str):
     return load_questionnaire(path)
 
 
+def _parse_boost(spec: str) -> dict[str, float]:
+    """"PL=4,LV=5" (country codes or English names) -> {"PL": 4.0, "LV": 5.0}."""
+    from .personas import geo
+
+    by_name = {c["name"].lower(): code for code, c in geo.COUNTRIES.items()}
+    out = {}
+    for part in filter(None, (x.strip() for x in spec.split(","))):
+        key, _, value = part.partition("=")
+        code = key.strip().upper() if key.strip().upper() in geo.COUNTRIES else by_name.get(key.strip().lower())
+        if code is None:
+            sys.exit(f"Unknown country {key!r} in --country-boost")
+        out[code] = float(value)
+    return out
+
+
 def cmd_personas(args) -> None:
     from .export import write_personas_csv
     from .personas import generate_personas, save_personas
 
-    personas = generate_personas(args.count, seed=args.seed, email_domain=args.email_domain)
+    personas = generate_personas(args.count, seed=args.seed, email_domain=args.email_domain, audience=args.audience,
+                                 country_boost=_parse_boost(args.country_boost))
     save_personas(personas, args.out)
     csv_path = Path(args.out).with_suffix(".csv")
     write_personas_csv(csv_path, personas)
@@ -56,6 +72,12 @@ def _print_stats(personas) -> None:
     show("main tool", Counter(p.ai["primary_tool"] for p in personas), 10)
     show("English", Counter(p.english_level for p in personas))
     show("survey style", Counter(f"{p.style['engagement']}/{p.style['verbosity']}" for p in personas), 9)
+    marketers = [p.marketing for p in personas if p.marketing]
+    if marketers:
+        active = [m for m in marketers if m["active"]]
+        print(f"  marketing in the last 12 months: {len(active)} of {len(marketers)}; "
+              f"no AI in marketing: {sum(not m['uses_ai'] for m in active)}")
+        show("marketing setting", Counter(m["setting"] for m in active))
 
 
 def cmd_stats(args) -> None:
@@ -91,18 +113,58 @@ def cmd_inspect(args) -> None:
 
 def cmd_answer(args) -> None:
     from .answering.runner import generate_responses
-    from .personas import load_personas
+    from .personas import load_personas, preferred_language
 
-    questionnaire = _load_questionnaire(args.form)
+    forms = [_load_questionnaire(f) for f in args.form]
     personas = load_personas(args.personas)
     if args.ids:
         wanted = {x.upper() for x in args.ids.split(",")}
         personas = [p for p in personas if p.id in wanted]
     if args.limit:
         personas = personas[: args.limit]
-    print(f"{len(personas)} personas x {len(questionnaire.questions)} questions, mode={args.mode}")
-    generate_responses(questionnaire, personas, args.out, mode=args.mode, model=args.model, effort=args.effort,
-                       workers=args.workers, resume=args.resume, seed=args.seed)
+    run = dict(mode=args.mode, model=args.model, effort=args.effort, workers=args.workers, resume=args.resume,
+               seed=args.seed)
+    if len(forms) == 1:
+        print(f"{len(personas)} personas x {len(forms[0].questions)} questions, mode={args.mode}")
+        generate_responses(forms[0], personas, args.out, **run)
+        return
+
+    # Several language versions: every persona answers the version they would pick, then everything is merged.
+    languages = [f.language for f in forms]
+    if not all(languages) or len(set(languages)) != len(languages):
+        sys.exit("With several --form files, each needs a different `language:` (e.g. EN, PL, RU).")
+    out = Path(args.out)
+    inputs = []
+    for form in forms:
+        group = [p for p in personas if preferred_language(p, languages) == form.language]
+        path = out.with_name(f"{out.stem}_{form.language.lower()}.json")
+        print(f"\n[{form.language}] {len(group)} personas x {len(form.questions)} questions, mode={args.mode}")
+        if group:
+            generate_responses(form, group, path, **run)
+            inputs.append((form, path))
+    _write_merged(inputs, out.with_name(f"{out.stem}_merged.csv"))
+
+
+def _write_merged(inputs, out_path, reference=None) -> None:
+    from .merge import merge, write_merged
+
+    warnings: list[str] = []
+    reference, records = merge(inputs, reference=reference, warnings=warnings)
+    codebook = write_merged(out_path, reference, records)
+    for w in warnings:
+        print(f"  warning: {w}")
+    by_lang = Counter(r["language"] for r in records)
+    status = Counter(r["status"] for r in records)
+    print(f"\nMerged {len(records)} responses ({', '.join(f'{k} {v}' for k, v in by_lang.items())}; "
+          f"{', '.join(f'{k} {v}' for k, v in status.items())}) -> {out_path}\nCodebook -> {codebook}")
+
+
+def cmd_merge(args) -> None:
+    from .questionnaire import load_questionnaire
+
+    inputs = [(load_questionnaire(form), data) for form, data in args.input]
+    reference = load_questionnaire(args.reference) if args.reference else None
+    _write_merged(inputs, args.out, reference)
 
 
 def cmd_submit(args) -> None:
@@ -145,6 +207,9 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--out", default=DEFAULT_PERSONAS)
     p.add_argument("--email-domain", default="example.com",
                    help="domain for persona e-mails (default is the reserved example.com)")
+    p.add_argument("--audience", choices=["general", "marketing"], default="general",
+                   help="general: AI users across professions; marketing: people doing marketing/promotion")
+    p.add_argument("--country-boost", default="", help="more personas from some countries, e.g. PL=4,LV=5")
     p.set_defaults(func=cmd_personas)
 
     p = sub.add_parser("stats", help="distribution summary of a personas file")
@@ -162,7 +227,9 @@ def main(argv: list[str] | None = None) -> None:
     p.set_defaults(func=cmd_inspect)
 
     p = sub.add_parser("answer", help="generate one response per persona")
-    p.add_argument("--form", required=True, help="Google Form URL, questionnaire .yaml/.json, or saved JSON")
+    p.add_argument("--form", required=True, action="append",
+                   help="Google Form URL, questionnaire .yaml/.json, or saved JSON; repeat it for language versions "
+                        "(each persona answers the version they would pick, results are merged)")
     p.add_argument("--personas", default=DEFAULT_PERSONAS)
     p.add_argument("--mode", choices=["llm", "offline"], default="llm")
     p.add_argument("--model", default=None, help="Claude model id (default claude-opus-5)")
@@ -174,6 +241,14 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--resume", action="store_true", help="keep existing responses in --out, answer the rest")
     p.add_argument("--seed", type=int, default=0)
     p.set_defaults(func=cmd_answer)
+
+    p = sub.add_parser("merge", help="merge language versions (synthetic .json or real CSV exports) into one table")
+    p.add_argument("--input", nargs=2, action="append", required=True, metavar=("FORM", "DATA"),
+                   help="questionnaire file of one language version and its responses (.json from `answer`, or a "
+                        "CSV export from Google Forms/Sheets); repeat for every version")
+    p.add_argument("--reference", help="version whose labels the merged table uses (default: the EN one)")
+    p.add_argument("--out", default="output/merged.csv")
+    p.set_defaults(func=cmd_merge)
 
     p = sub.add_parser("submit", help="submit generated responses to the Google Form (dry run by default)")
     p.add_argument("responses")

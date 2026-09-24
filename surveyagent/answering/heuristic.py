@@ -15,6 +15,7 @@ from datetime import date
 
 from ..personas.generator import Persona
 from ..questionnaire import CHOICE_TYPES, GRID_TYPES, SCALE_TYPES, TEXT_TYPES, Question, Questionnaire
+from . import topics
 
 NEGATIVE_WORDS = ("worr", "concern", "risk", "threat", "replace", "afraid", "fear", "danger", "harm", "anxious",
                   "overhyped", "overrated", "mistrust", "distrust", "job loss", "lose my job", "stress", "difficult",
@@ -130,14 +131,24 @@ class HeuristicAnswerer:
         self.seed = seed
 
     def answer(self, persona: Persona) -> dict:
+        """Answers along the form's path; questions the logic skips are None."""
         rng = random.Random(f"{self.seed}:{persona.id}")
-        return {q.id: self.answer_question(q, persona, rng) for q in self.questionnaire.questions}
+        answers: dict = {}
+        for q in self.questionnaire.iter_path(answers):
+            answers[q.id] = self.answer_question(q, persona, rng, context=answers)
+        return {q.id: answers.get(q.id) for q in self.questionnaire.questions}
 
     # ------------------------------------------------------------------ #
-    def answer_question(self, q: Question, p: Persona, rng: random.Random, allow_skip: bool = True):
+    def answer_question(self, q: Question, p: Persona, rng: random.Random, allow_skip: bool = True,
+                        context: dict | None = None):
+        """`context` holds the answers given so far (used by topic-based questions)."""
         skip = p.style.get("skip_optional_prob", 0.2)
         if q.type == "email":
             return p.email
+        if q.topic:
+            value = topics.answer(q, p, rng, context or {}, self.questionnaire, allow_skip)
+            if value is not topics.UNKNOWN:
+                return value
         if not q.required and allow_skip:
             if q.type in TEXT_TYPES and rng.random() < skip:
                 return None
@@ -188,7 +199,7 @@ class HeuristicAnswerer:
             base = 0.5 if not policy else 0.2 if "no clear" in policy else 0.4 if "discouraged" in policy else 0.8
         elif "often" in low or "frequen" in low:
             base = {"several times a day": 1.0, "daily": 0.8, "a few times a week": 0.6, "about once a week": 0.4,
-                    "a few times a month": 0.2}[ai["frequency"]]
+                    "a few times a month": 0.2}.get(ai["frequency"], 0.0)
         else:
             base = {"enthusiast": 0.85, "pragmatist": 0.65, "cautious": 0.45, "skeptic": 0.25}[ai["attitude"]]
             if any(w in low for w in NEGATIVE_WORDS):
@@ -271,7 +282,7 @@ class HeuristicAnswerer:
             return _pick_range(opts, (lo + hi) / 2 if hi < 20000 else 8000)
         if "experience" in title and "year" in title:
             if re.search(r"\bai\b|artificial|chatgpt|tools", title):
-                return _pick_range(opts, 2026 - ai["since_year"] + 0.5)
+                return _pick_range(opts, 2026 - (ai["since_year"] or 2026) + 0.5)
             return _pick_range(opts, p.years_experience)
         if re.search(r"income|salary|earn", title):
             if not p.style.get("discloses_income", True):
@@ -297,11 +308,11 @@ class HeuristicAnswerer:
             return next((o for o, l in lows.items() if l.strip(" .") == wanted), None)
         if re.search(r"how often|how frequently|frequency", title):
             for o in opts:
-                if any(w in o.lower() for w in FREQ_WORDS[ai["frequency"]]):
+                if any(w in o.lower() for w in FREQ_WORDS.get(ai["frequency"], ["never"])):
                     return o
             return None
         if re.search(r"how long have you|since when|when did you (start|begin)", title):
-            months = (2026 - ai["since_year"]) * 12 + 6
+            months = (2026 - (ai["since_year"] or 2026)) * 12 + 6
             for o in opts:
                 r = _range_of(o)
                 if r:
@@ -333,8 +344,8 @@ class HeuristicAnswerer:
 
     def _yes_no(self, title: str, p: Persona, rng: random.Random) -> bool:
         ai = p.ai
-        if re.search(r"use (any )?(ai|artificial intelligence|genai|generative)", title):
-            return True
+        if re.search(r"use[ds]? (any )?(ai|artificial intelligence|genai|generative)", title):
+            return p.uses_ai
         if re.search(r"(employer|company|organi[sz]ation).*(provide|pay|licen)", title):
             return "employer pays" in ai["access"]
         if re.search(r"pay .*(yourself|personally|own)", title):
@@ -388,6 +399,9 @@ class HeuristicAnswerer:
     def _text(self, q: Question, p: Persona, rng: random.Random) -> str | None:
         title = f"{q.title} {q.description}".lower()
         ai = p.ai
+        if not p.uses_ai and not re.search(r"e-?mail|name|\bage\b|how old|country|city|town|job title|industry|sector",
+                                           title):
+            return f"I don't use AI at work, {ai['non_use_reason']}."
         verbose = p.style.get("verbosity", "moderate")
         short = len(q.title) < 70  # factual one-liners like "Your job title?"
         if re.search(r"e-?mail", title):

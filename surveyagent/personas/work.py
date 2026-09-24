@@ -1008,6 +1008,55 @@ PROFESSIONS: list[dict] = [
         concerns=w("privacy:4; accuracy:4; job:2; policy:2"),
         wins=["the internal assistant summarises a 50-page claim file in a minute"],
         fails=["the bank's chatbot is so restricted that I end up doing it by hand anyway"]),
+    # Weight 0: only used by the "marketing" audience (see MARKETING_AUDIENCE), so the general sample is unchanged.
+    dict(
+        key="pr_comms", label="PR / communications specialist", weight=0, female=0.65, min_age=21,
+        titles=dict(junior=["PR Assistant", "Junior Communications Specialist"],
+                    mid=["PR Specialist", "Communications Specialist", "Communications Manager"],
+                    senior=["Senior Communications Manager", "Senior PR Manager"], lead=["Communications Lead"],
+                    head=["Head of Communications", "Communications Director"]),
+        freelance_title="Freelance PR Consultant",
+        industries=w("PR agency:3; Non-profit:1.5; Public agency:1; Software / SaaS:1; Consumer goods:1; "
+                     "Energy:0.5; University:0.5; Tourism & hospitality:0.5"),
+        education=w("bachelor:5; master:5"),
+        fields=["Communication Studies", "Journalism", "Public Relations", "Political Science", "Media Studies"],
+        sizes="mixed", work=w("remote:2; hybrid:6; office:2"), employment=w("employee:8; freelancer:2"),
+        salary=1.0, globalized=0.15, intensity=0.75,
+        tools=w("ChatGPT:9; Claude:4; Gemini:3; Microsoft Copilot:3; Perplexity:3; DeepL:3; Canva Magic Studio:3; "
+                "AI transcription (Whisper-based):2; Grammarly:1.5"),
+        uses=["drafting press releases", "media monitoring summaries", "drafts of statements and speeches",
+              "social media posts", "Q&A documents for spokespeople", "translating statements", "newsletter texts"],
+        attitudes=w("enthusiast:2; pragmatist:5; cautious:3; skeptic:1.5"),
+        concerns=w("accuracy:4; misinfo:3; bland:3; privacy:2; copyright:1.5"),
+        wins=["turned a 20-page report into a press release draft in ten minutes",
+              "summarised a week of media coverage before the Monday meeting"],
+        fails=["an AI draft of a statement put words in our CEO's mouth that he never said",
+               "a press release draft used a statistic nobody could find a source for"]),
+    dict(
+        key="performance_marketer", label="SEO / paid media specialist", weight=0, female=0.45, min_age=21,
+        max_years=18,
+        titles=dict(junior=["Junior SEO Specialist", "PPC Assistant"],
+                    mid=["SEO Specialist", "PPC Specialist", "Paid Social Specialist", "Performance Marketing Manager"],
+                    senior=["Senior SEO Specialist", "Senior Paid Media Manager"],
+                    lead=["Performance Marketing Lead", "SEO Lead"], head=["Head of Performance Marketing"]),
+        freelance_title="Freelance SEO & Ads Consultant",
+        industries=w("Digital agency:4; E-commerce & retail:2; Software / SaaS:1.5; Tourism & hospitality:1; "
+                     "FinTech & banking:0.5"),
+        education=w("bachelor:6; master:3; none:1"),
+        fields=["Marketing", "Business Administration", "Economics", "Computer Science", "Media Studies"],
+        sizes="agency", work=w("remote:4; hybrid:5; office:1"), employment=w("employee:7; freelancer:3"),
+        salary=1.05, globalized=0.3, intensity=0.95,
+        tools=w("ChatGPT:9; Google Ads AI features (Performance Max):6; Meta Advantage+:5; Semrush AI:4; "
+                "Surfer SEO:3; Claude:4; Gemini:4; GA4 predictive insights:2; Perplexity:2"),
+        uses=["ad copy variations", "keyword research and clustering", "writing meta descriptions",
+              "Performance Max campaigns", "analysing campaign data", "monthly client reports",
+              "landing page copy tests", "search intent analysis"],
+        attitudes=w("enthusiast:4; pragmatist:5; cautious:1; skeptic:0.7"),
+        concerns=w("accuracy:3; bland:2; cost:1.5; dependence:2; job:1; privacy:1"),
+        wins=["cut the time for monthly client reports from a day to two hours",
+              "AI keyword clustering found a niche that became our best-converting campaign"],
+        fails=["Performance Max spent half the budget on placements we would never have chosen",
+               "an AI tool suggested keywords with zero search volume in our market"]),
 ]
 
 PROFESSIONS_BY_KEY = {p["key"]: p for p in PROFESSIONS}
@@ -1019,3 +1068,96 @@ ENTERPRISE_TOOLS = {
     "Microsoft Security Copilot", "Cursor", "Claude Code", "AI medical scribe", "Notion AI", "Atlassian Intelligence",
     "Figma AI", "Adobe Firefly", "Adobe Photoshop Generative Fill", "DeepL", "CoCounsel", "Gong",
 }
+
+# --------------------------------------------------------------------------- #
+# "marketing" audience: people who did marketing or promotion in the last 12 months
+# --------------------------------------------------------------------------- #
+# Profession weights. A small share of other professions stands for people who received the survey link
+# but do not work in marketing (they are screened out by an eligibility question).
+MARKETING_AUDIENCE = w("marketing:10; performance_marketer:4; social_media:5; content_writer:4; pr_comms:4; "
+                       "ecommerce:3; graphic_designer:2; video_creator:1.5; small_business:5; founder:2; sales:1.5")
+NON_MARKETER_SHARE = 0.04
+
+# The marketing tasks of the questionnaire, in the order of its task grid.
+MARKETING_TASKS = ["audience_research", "strategy", "segmentation", "copywriting", "visuals", "ads", "community",
+                   "reporting"]
+MARKETING_TASK_LABELS = {
+    "audience_research": "audience and market analysis", "strategy": "strategy, goals and KPI planning",
+    "segmentation": "segmentation, personas and personalisation", "copywriting": "writing promotional content",
+    "visuals": "creating or editing images and video", "ads": "running or optimising ad campaigns",
+    "community": "audience communication, customer service and chatbots", "reporting": "results analysis and reporting",
+}
+# How likely someone in this profession does the task at all.
+MARKETING_TASK_PROFILES = {
+    "marketing": dict(audience_research=.85, strategy=.8, segmentation=.7, copywriting=.85, visuals=.6, ads=.7,
+                      community=.4, reporting=.9),
+    "performance_marketer": dict(audience_research=.8, strategy=.6, segmentation=.85, copywriting=.7, visuals=.35,
+                                 ads=1, community=.15, reporting=1),
+    "social_media": dict(audience_research=.7, strategy=.5, segmentation=.4, copywriting=.95, visuals=.9, ads=.55,
+                         community=.95, reporting=.8),
+    "content_writer": dict(audience_research=.6, strategy=.35, segmentation=.35, copywriting=1, visuals=.3, ads=.25,
+                           community=.25, reporting=.4),
+    "pr_comms": dict(audience_research=.7, strategy=.75, segmentation=.4, copywriting=.95, visuals=.45, ads=.25,
+                     community=.8, reporting=.7),
+    "ecommerce": dict(audience_research=.75, strategy=.6, segmentation=.7, copywriting=.8, visuals=.7, ads=.8,
+                      community=.6, reporting=.9),
+    "graphic_designer": dict(audience_research=.25, strategy=.2, segmentation=.1, copywriting=.35, visuals=1, ads=.3,
+                             community=.1, reporting=.15),
+    "video_creator": dict(audience_research=.3, strategy=.2, segmentation=.1, copywriting=.6, visuals=1, ads=.3,
+                          community=.35, reporting=.3),
+    "small_business": dict(audience_research=.4, strategy=.35, segmentation=.2, copywriting=.95, visuals=.85, ads=.5,
+                           community=.9, reporting=.35),
+    "founder": dict(audience_research=.85, strategy=.9, segmentation=.6, copywriting=.8, visuals=.5, ads=.55,
+                    community=.6, reporting=.7),
+    "sales": dict(audience_research=.7, strategy=.35, segmentation=.6, copywriting=.7, visuals=.2, ads=.2,
+                  community=.7, reporting=.6),
+}
+# How common AI help is for each task among marketers who use AI (0..1).
+MARKETING_TASK_AI_AFFINITY = dict(audience_research=.55, strategy=.4, segmentation=.45, copywriting=.85,
+                                  visuals=.6, ads=.5, community=.45, reporting=.45)
+# Words in a persona's AI use cases that point to a task.
+MARKETING_TASK_WORDS = {
+    "audience_research": ["research", "trend", "market", "reviews", "prospect", "intent", "monitoring"],
+    "strategy": ["brainstorm", "strategy", "plan", "calendar", "pitch"],
+    "segmentation": ["segment", "persona", "personalis", "audiences", "different audiences"],
+    "copywriting": ["post", "copy", "caption", "blog", "newsletter", "article", "headline", "description", "hooks",
+                    "outreach", "press release", "statement", "writing", "texts", "draft", "seo", "meta"],
+    "visuals": ["visual", "image", "photo", "video", "clip", "thumbnail", "b-roll", "mockup", "moodboard",
+                "subtitle", "flyer", "voice-over", "retouch", "concept art"],
+    "ads": ["ad copy", "ads", "campaign", "keyword", "performance max", "localising"],
+    "community": ["replying", "comments", "review", "customer", "support", "chatbot", "q&a"],
+    "reporting": ["analys", "report", "performance", "dashboard", "summar"],
+}
+# Levels of AI use per task (task-grid columns); "no" = does not do this task.
+AI_TASK_LEVELS = ["never", "few", "some", "most", "almost always"]
+
+# What kind of AI tool each tool is (for "which types of AI tools do you use").
+TOOL_KINDS = {
+    "text": {"ChatGPT", "Claude", "Gemini", "Microsoft Copilot", "Perplexity", "Mistral Le Chat", "Jasper",
+             "Grammarly", "Notion AI", "Meta AI", "DeepSeek", "Surfer SEO", "internal company AI assistant",
+             "HubSpot Breeze AI", "Shopify Magic"},
+    "visual": {"Canva Magic Studio", "Midjourney", "Adobe Firefly", "Adobe Photoshop Generative Fill", "CapCut",
+               "Opus Clip", "Runway", "Descript", "Photoroom", "Ideogram", "Krea", "HeyGen", "Synthesia",
+               "AI video generators (Veo, Sora)", "Adobe Premiere Pro AI features", "Figma AI"},
+    "ads": {"HubSpot Breeze AI", "Google Ads AI features (Performance Max)", "Meta Advantage+", "Salesforce Agentforce",
+            "automation tools with AI (n8n, Make)", "Shopify Magic"},
+    "analytics": {"GA4 predictive insights", "Semrush AI", "Julius AI", "Gong"},
+    "chatbot": {"Intercom Fin", "Zendesk AI", "website chatbot (Tidio AI)"},
+    "other": {"DeepL", "DeepL Write", "ElevenLabs", "AI transcription (Whisper-based)", "Otter.ai", "Fireflies.ai"},
+}
+# Extra tools a marketer picks up for tasks that their profession's tool list does not cover.
+MARKETING_EXTRA_TOOLS = {
+    "ads": ["Meta Advantage+", "Google Ads AI features (Performance Max)"],
+    "analytics": ["GA4 predictive insights", "Semrush AI"],
+    "chatbot": ["website chatbot (Tidio AI)", "Intercom Fin"],
+}
+
+# Why some marketers do not use AI at all (probabilities depend on attitude, see the generator).
+AI_NON_USE_REASONS = [
+    "does not trust AI output for client work",
+    "prefers to write and design everything personally",
+    "the employer does not allow AI tools",
+    "has not found the time to learn it",
+    "does not see the need in a business this small",
+    "worried about copyright and data protection",
+]

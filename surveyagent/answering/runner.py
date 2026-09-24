@@ -39,9 +39,12 @@ def _last_resort(q: Question):
 
 def finalize_answers(questionnaire: Questionnaire, persona: Persona, raw: dict, fallback: HeuristicAnswerer,
                      rng: random.Random, warnings: list[str]) -> dict:
-    """Validate every answer; replace invalid ones and add typing noise to free text."""
-    answers = {}
-    for q in questionnaire.questions:
+    """Validate every answer along the form's path; replace invalid ones and add typing noise to free text.
+
+    Questions the respondent would not see (because of go_to logic) are set to None.
+    """
+    answers: dict = {}
+    for q in questionnaire.iter_path(answers):
         if q.type == "email":
             answers[q.id] = persona.email
             continue
@@ -50,13 +53,14 @@ def finalize_answers(questionnaire: Questionnaire, persona: Persona, raw: dict, 
         except ValueError as exc:
             warnings.append(f"{q.id}: {exc} -> offline fallback")
             try:
-                value = normalize_answer(q, fallback.answer_question(q, persona, rng, allow_skip=False))
+                value = normalize_answer(q, fallback.answer_question(q, persona, rng, allow_skip=False,
+                                                                     context=answers))
             except ValueError:
                 value = normalize_answer(q, _last_resort(q))
         if q.type in TEXT_TYPES and isinstance(value, str) and "@" not in value:
             value = humanize(value, persona.style, rng)
         answers[q.id] = value
-    return answers
+    return {q.id: answers.get(q.id) for q in questionnaire.questions}
 
 
 def load_records(path: str | Path) -> list[dict]:
@@ -109,7 +113,7 @@ def generate_responses(questionnaire: Questionnaire, personas: list[Persona], ou
         answers = finalize_answers(questionnaire, persona, raw, fallback, rng, warnings)
         record = {
             "persona_id": persona.id, "persona_name": persona.full_name,
-            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "synthetic": True,
             "mode": mode, "model": usage["model"] if usage else None, "answers": answers,
         }
         if warnings:

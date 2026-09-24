@@ -9,7 +9,11 @@ Answer values by question type:
     checkbox_grid                    -> {row label: [column labels]}
     date                             -> "YYYY-MM-DD"
     time                             -> "HH:MM"
-    None                             -> not answered
+    None                             -> not answered (or not shown because of the form's logic)
+
+Logic works like "Go to section based on answer" in Google Forms: `go_to` maps an option of a
+single-choice question to the id of a later question, or to END to finish the survey. Questions that
+are jumped over are not shown and stay None.
 """
 
 from __future__ import annotations
@@ -26,6 +30,7 @@ CHOICE_TYPES = {"single_choice", "dropdown"}
 SCALE_TYPES = {"scale", "rating"}
 GRID_TYPES = {"grid", "checkbox_grid"}
 QUESTION_TYPES = TEXT_TYPES | CHOICE_TYPES | SCALE_TYPES | GRID_TYPES | {"checkboxes", "date", "time", "email"}
+END = "end"
 
 TYPE_ALIASES = {
     "text": "short_text", "short": "short_text", "short_answer": "short_text", "string": "short_text",
@@ -55,6 +60,9 @@ class Question:
     entry_ids: list[str] = field(default_factory=list)     # Google Forms entry ids (one per grid row)
     date_has_year: bool = True
     date_has_time: bool = False
+    go_to: dict[str, str] = field(default_factory=dict)    # option -> later question id or END
+    exclusive: list[str] = field(default_factory=list)     # checkbox options that must be ticked alone
+    topic: str = ""                                        # what is measured, for offline answering
 
     def __post_init__(self) -> None:
         self.type = TYPE_ALIASES.get(self.type, self.type)
@@ -69,10 +77,22 @@ class Question:
             raise ValueError(f"Question {self.id!r} ({self.type}) needs options")
         if self.type in GRID_TYPES and not self.rows:
             raise ValueError(f"Question {self.id!r} ({self.type}) needs rows")
+        if self.go_to and self.type not in CHOICE_TYPES:
+            raise ValueError(f"Question {self.id!r}: go_to only works on single-choice questions")
+        if unknown := [o for o in self.go_to if o not in self.options]:
+            raise ValueError(f"Question {self.id!r}: go_to refers to unknown options {unknown}")
+        if self.exclusive and self.type != "checkboxes":
+            raise ValueError(f"Question {self.id!r}: exclusive options only work on checkboxes")
+        if unknown := [o for o in self.exclusive if o not in self.options]:
+            raise ValueError(f"Question {self.id!r}: exclusive refers to unknown options {unknown}")
 
     @property
     def scale_values(self) -> list[int]:
         return list(range(int(self.scale_min), int(self.scale_max) + 1))
+
+    def jump_for(self, value: Any) -> str | None:
+        """Where the respondent goes after giving `value`: a question id, END, or None for "next"."""
+        return self.go_to.get(value) if isinstance(value, str) else None
 
 
 @dataclass
@@ -82,12 +102,49 @@ class Questionnaire:
     description: str = ""
     source: str = ""
     google: dict | None = None  # form_response_url, view_url, fbzx, page_count, collects_email
+    language: str = ""          # e.g. "EN"; used to route personas and to label merged exports
+
+    def __post_init__(self) -> None:
+        index = {q.id: i for i, q in enumerate(self.questions)}
+        for i, q in enumerate(self.questions):
+            for option, target in q.go_to.items():
+                if target != END and index.get(target, -1) <= i:
+                    raise ValueError(f"Question {q.id!r}: go_to {option!r} must point to a later question "
+                                     f"or {END!r}, not {target!r}")
 
     def question(self, qid: str) -> Question:
         for q in self.questions:
             if q.id == qid:
                 return q
         raise KeyError(qid)
+
+    def iter_path(self, answers: dict):
+        """Yield the questions a respondent sees, in order, following the form's logic.
+
+        `answers` is read lazily, so a caller may fill it in while iterating.
+        """
+        index = {q.id: i for i, q in enumerate(self.questions)}
+        i = 0
+        while i < len(self.questions):
+            q = self.questions[i]
+            yield q
+            target = q.jump_for(answers.get(q.id))
+            if target == END:
+                return
+            i = index[target] if target else i + 1
+
+    def path(self, answers: dict) -> list[Question]:
+        return list(self.iter_path(answers))
+
+    def conditional_ids(self) -> set[str]:
+        """Questions that some answers skip (jumped over or cut off by END)."""
+        out: set[str] = set()
+        index = {q.id: i for i, q in enumerate(self.questions)}
+        for i, q in enumerate(self.questions):
+            for target in q.go_to.values():
+                stop = len(self.questions) if target == END else index[target]
+                out.update(x.id for x in self.questions[i + 1:stop])
+        return out
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -96,7 +153,7 @@ class Questionnaire:
     def from_dict(cls, data: dict) -> "Questionnaire":
         questions = [Question(**q) for q in data["questions"]]
         return cls(title=data.get("title", ""), questions=questions, description=data.get("description", ""),
-                   source=data.get("source", ""), google=data.get("google"))
+                   source=data.get("source", ""), google=data.get("google"), language=data.get("language", ""))
 
     def save(self, path: str | Path) -> None:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -127,12 +184,17 @@ def load_questionnaire(path: str | Path) -> Questionnaire:
         if "labels" in raw:
             raw["scale_labels"] = list(raw.pop("labels"))
         raw["options"] = [str(o) for o in raw.get("options", [])]
+        if "go_to" in raw:
+            raw["go_to"] = {str(k): str(v) for k, v in raw["go_to"].items()}
+        if "exclusive" in raw:
+            raw["exclusive"] = [str(o) for o in raw["exclusive"]]
         questions.append(Question(**raw))
     ids = [q.id for q in questions]
     if len(set(ids)) != len(ids):
         raise ValueError("Question ids must be unique")
     return Questionnaire(title=data.get("title", path.stem), description=data.get("description", ""),
-                         questions=questions, source=str(path), google=data.get("google"))
+                         questions=questions, source=str(path), google=data.get("google"),
+                         language=str(data.get("language", "")).upper())
 
 
 # --------------------------------------------------------------------------- #
@@ -191,6 +253,9 @@ def normalize_answer(q: Question, value: Any) -> Any:
             if key not in seen:
                 seen.add(key)
                 out.append(norm)
+        alone = [o for o in out if o in q.exclusive]
+        if alone and len(out) > 1:
+            raise ValueError(f"{alone[0]!r} must be the only selected option")
         return out
     if t in SCALE_TYPES:
         try:

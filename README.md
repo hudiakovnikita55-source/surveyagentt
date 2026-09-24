@@ -3,8 +3,13 @@
 Синтетические респонденты для анкет: набор реалистичных персон и скрипт, который заполняет анкету
 (Google Forms или свой YAML) от имени каждой персоны так, как это сделал бы живой человек.
 
-Первый набор: **100 персон, живущих в Европе и использующих ИИ в работе**
-([`data/personas.json`](data/personas.json), табличный вид: [`data/personas.csv`](data/personas.csv)).
+Наборы персон:
+
+- **100 персон, живущих в Европе и использующих ИИ в работе**
+  ([`data/personas.json`](data/personas.json), табличный вид: [`data/personas.csv`](data/personas.csv));
+- **100 персон, занимающихся маркетингом и продвижением** (большинство использует ИИ, часть нет; несколько человек
+  не из маркетинга, чтобы отсеивающие вопросы тоже срабатывали):
+  [`data/marketing_personas.json`](data/marketing_personas.json), [`data/marketing_personas.csv`](data/marketing_personas.csv).
 
 ## Ответственное использование
 
@@ -58,6 +63,53 @@ python -m surveyagent submit output/responses.json --send --delay 3
 Результат `answer` сохраняется в двух видах: `responses.json` (анкета + ответы, из него работает `submit`)
 и `responses.csv` (одна строка на респондента, столбцы как в выгрузке Google Sheets).
 
+## Анкета «Использование ИИ в маркетинге и продвижении» (PL / EN / RU)
+
+Три языковые версии анкеты лежат в [`surveys/ai_marketing/`](surveys/ai_marketing/): `en.yaml`, `pl.yaml`, `ru.yaml`.
+Коды вопросов P1–P15, порядок вариантов и логика одинаковые во всех версиях:
+P1 «Нет» → конец анкеты, P2 «Нет» → конец, P7 «Нет» → пропуск P8–P11 и переход к P12;
+в P13 вариант «не использую ИИ» можно выбрать только отдельно.
+
+**Синтетический тестовый набор** (офлайн-режим, 100 персон-маркетологов) лежит в
+[`surveys/ai_marketing/synthetic/`](surveys/ai_marketing/synthetic/). Он нужен, чтобы заранее собрать анализ
+(таблицы, графики, скрипты), пока идёт сбор настоящих ответов. Это не результаты опроса, в форму он не отправляется,
+в каждом файле есть столбец `synthetic = yes`.
+
+- `synthetic_en|pl|ru.json/.csv` — ответы по языковым версиям (каждая персона отвечала на своём языке:
+  носители польского на PL, русского на RU, остальные на EN);
+- `synthetic_merged.csv` — одна таблица на всех: столбцы `P1…P15` (сетки и множественный выбор разложены по столбцам
+  `P10_1…P10_8`, `P9_1…P9_5` = 1/0), значения переведены в английские формулировки, плюс `language`, `status`
+  (`complete`, `ended_at_P1`, `ended_at_P2`), `P3_country` (страна, приведённая к одному написанию),
+  `P13_conflict` (отмечено «не использую ИИ» вместе с другими вариантами);
+- `synthetic_merged_codebook.csv` — описание каждого столбца.
+
+Воспроизвести набор или сделать новый:
+
+```bash
+python -m surveyagent personas --audience marketing --seed 37 --country-boost PL=4,LV=5,EE=5 \
+    --out data/marketing_personas.json
+python -m surveyagent answer --personas data/marketing_personas.json --mode offline \
+    --form surveys/ai_marketing/en.yaml --form surveys/ai_marketing/pl.yaml --form surveys/ai_marketing/ru.yaml \
+    --out surveys/ai_marketing/synthetic/synthetic.json
+# с Claude вместо офлайн-логики (живые открытые ответы): убрать --mode offline, нужен ANTHROPIC_API_KEY
+```
+
+**Настоящие ответы в ту же таблицу.** Когда соберёте реальные ответы, скачайте из каждой формы CSV
+(«Ответы» → «Скачать ответы (.csv)» или из Google Таблицы) и сведите их той же командой:
+
+```bash
+python -m surveyagent merge \
+    --input surveys/ai_marketing/en.yaml exports/en.csv \
+    --input surveys/ai_marketing/pl.yaml exports/pl.csv \
+    --input surveys/ai_marketing/ru.yaml exports/ru.csv \
+    --out output/merged.csv
+```
+
+Столбцы выгрузки сопоставляются с вопросами по тексту (с кодом «P7.» в начале или без него), варианты — по тексту
+в своей версии и переводятся по позиции. Получится таблица той же структуры, что `synthetic_merged.csv`
+(`synthetic = no`), так что анализ, собранный на тестовых данных, работает без изменений. Если формулировка в форме
+отличается от YAML, команда напишет, какой вопрос не найден: поправьте текст в YAML.
+
 ## Персоны
 
 Генератор детерминированный (`--seed`), все поля согласованы между собой:
@@ -105,14 +157,22 @@ python -m surveyagent submit output/responses.json --send --delay 3
   списка, вариант «Другое», шкала, сетки (одиночный и множественный выбор), дата, время, сбор e-mail,
   многостраничные формы;
 - не поддерживаются: загрузка файлов, формы с обязательным входом в Google, переходы между разделами
-  в зависимости от ответа (сейчас считается, что респондент проходит все разделы по порядку);
+  в зависимости от ответа при чтении формы по ссылке (логику можно описать только в YAML через `go_to`);
 - перед отправкой `submit --send` проверяет, что форма не изменилась с момента генерации ответов.
 
 ## Своя анкета в YAML
 
-См. [`examples/ai_at_work_survey.yaml`](examples/ai_at_work_survey.yaml). Типы вопросов: `short_text`,
-`paragraph`, `single_choice`, `dropdown`, `checkboxes`, `scale`, `rating`, `grid`, `checkbox_grid`,
-`date`, `time`; `other: true` добавляет вариант «Другое».
+См. [`examples/ai_at_work_survey.yaml`](examples/ai_at_work_survey.yaml) и [`surveys/ai_marketing/`](surveys/ai_marketing/).
+Типы вопросов: `short_text`, `paragraph`, `single_choice`, `dropdown`, `checkboxes`, `scale`, `rating`, `grid`,
+`checkbox_grid`, `date`, `time`. Дополнительно:
+
+- `other: true` — вариант «Другое» со своим текстом;
+- `go_to: {"Нет": end}` или `go_to: {"Нет": P12}` — переход в зависимости от ответа (как «Перейти к разделу» в Google
+  Forms); пропущенные вопросы остаются пустыми, модель их не заполняет;
+- `exclusive: [вариант]` — вариант множественного выбора, который нельзя совмещать с другими;
+- `language: PL` — код языковой версии: по нему персоны выбирают версию анкеты и подписываются строки в сводной таблице;
+- `topic: ...` — что измеряет вопрос; для известных тем (см. `answering/topics.py`) офлайн-режим отвечает по профилю
+  персоны на любом языке. Значения `Yes`/`No` в YAML берите в кавычки, иначе YAML прочитает их как true/false.
 
 ## Структура
 
@@ -125,11 +185,15 @@ surveyagent/
   google_forms.py         разбор Google Form, сборка и отправка ответа
   answering/llm.py        ответы через Claude (схема, промпт, разбор)
   answering/heuristic.py  офлайн-ответы и подстраховка для LLM
+  answering/topics.py     офлайн-ответы по темам вопросов (не зависят от языка анкеты)
   answering/humanize.py   опечатки, регистр, пунктуация
   answering/runner.py     параллельный прогон, проверка, сохранение, --resume
   export.py               CSV
+  merge.py                сведение языковых версий и выгрузок Google Forms в одну таблицу
   cli.py                  команды python -m surveyagent ...
-data/personas.json|csv    100 персон
+data/personas.json|csv    100 персон (ИИ в работе)
+data/marketing_personas.* 100 персон (маркетинг)
 examples/                 пример анкеты
+surveys/ai_marketing/     анкета PL/EN/RU и синтетический тестовый набор
 tests/                    python -m pytest
 ```

@@ -1,0 +1,1044 @@
+{
+  "questionnaire": {
+    "title": "ANKIETA: Wykorzystanie AI w marketingu i promocji",
+    "questions": [
+      {
+        "id": "P1",
+        "title": "Czy wyraża Pan/Pani zgodę na dobrowolny udział w anonimowym badaniu?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Tak",
+          "Nie"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "I. Zgoda i kwalifikacja",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {
+          "Nie": "end"
+        },
+        "exclusive": [],
+        "topic": "consent"
+      },
+      {
+        "id": "P2",
+        "title": "Czy w ciągu ostatnich 12 miesięcy zajmował(a) się Pan/Pani marketingiem lub promocją?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Tak",
+          "Nie"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "I. Zgoda i kwalifikacja",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {
+          "Nie": "end"
+        },
+        "exclusive": [],
+        "topic": "did_marketing"
+      },
+      {
+        "id": "P3",
+        "title": "W jakim kraju wykonuje Pan/Pani większość pracy związanej z marketingiem lub promocją?",
+        "type": "short_text",
+        "required": true,
+        "description": "",
+        "options": [],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "II. Informacje o respondencie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "work_country"
+      },
+      {
+        "id": "P4",
+        "title": "Która odpowiedź najlepiej opisuje Pana/Pani pracę?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Pracuję w agencji marketingowej lub reklamowej",
+          "Pracuję w dziale marketingu firmy lub organizacji",
+          "Pracuję jako freelancer/freelancerka",
+          "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem"
+        ],
+        "has_other": true,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "II. Informacje o respondencie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "marketing_setting"
+      },
+      {
+        "id": "P5",
+        "title": "Jak długo pracuje Pan/Pani w marketingu lub promocji?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Mniej niż 1 rok",
+          "1–3 lata",
+          "4–6 lat",
+          "7–10 lat",
+          "Powyżej 10 lat"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "II. Informacje o respondencie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "marketing_years"
+      },
+      {
+        "id": "P6",
+        "title": "Ile osób pracuje w organizacji, dla której wykonuje Pan/Pani większość działań marketingowych?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Pracuję samodzielnie / firma jednoosobowa",
+          "2–9 osób",
+          "10–49 osób",
+          "50–249 osób",
+          "250 osób lub więcej",
+          "Trudno powiedzieć / nie dotyczy"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "II. Informacje o respondencie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "org_size"
+      },
+      {
+        "id": "P7",
+        "title": "Czy w ciągu ostatnich 12 miesięcy korzystał(a) Pan/Pani z AI w pracy marketingowej lub promocyjnej?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Tak",
+          "Nie"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "III. Wykorzystanie AI",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {
+          "Nie": "P12"
+        },
+        "exclusive": [],
+        "topic": "ai_use"
+      },
+      {
+        "id": "P8",
+        "title": "Jak często korzysta Pan/Pani z AI w pracy marketingowej lub promocyjnej?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Codziennie",
+          "Kilka razy w tygodniu",
+          "Raz w tygodniu",
+          "Kilka razy w miesiącu",
+          "Rzadziej niż raz w miesiącu"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "III. Wykorzystanie AI",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_frequency"
+      },
+      {
+        "id": "P9",
+        "title": "Z jakich rodzajów narzędzi AI korzysta Pan/Pani?",
+        "type": "checkboxes",
+        "required": true,
+        "description": "",
+        "options": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
+          "AI w systemach reklamowych lub automatyzacji marketingu",
+          "Analityka, prognozowanie lub segmentacja odbiorców",
+          "Chatboty lub obsługa klienta"
+        ],
+        "has_other": true,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "III. Wykorzystanie AI",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_tool_types"
+      },
+      {
+        "id": "P10",
+        "title": "Do jakich zadań marketingowych wykorzystuje Pan/Pani AI?",
+        "type": "grid",
+        "required": true,
+        "description": "",
+        "options": [
+          "Nigdy",
+          "W niewielu zadaniach",
+          "W części zadań",
+          "W większości zadań",
+          "Prawie zawsze",
+          "Nie wykonuję takich zadań"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [
+          "Analiza odbiorców i rynku",
+          "Planowanie strategii, celów i KPI",
+          "Segmentacja, tworzenie person i personalizacja",
+          "Pisanie treści promocyjnych",
+          "Tworzenie lub edycja obrazów i wideo",
+          "Prowadzenie lub optymalizacja kampanii reklamowych",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty",
+          "Analiza wyników i raportowanie"
+        ],
+        "page": 0,
+        "section": "III. Wykorzystanie AI",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_task_use"
+      },
+      {
+        "id": "P11",
+        "title": "Na ile zgadza się Pan/Pani z poniższymi zdaniami?",
+        "type": "grid",
+        "required": true,
+        "description": "",
+        "options": [
+          "Zdecydowanie się nie zgadzam",
+          "Raczej się nie zgadzam",
+          "Ani się zgadzam, ani nie zgadzam",
+          "Raczej się zgadzam",
+          "Zdecydowanie się zgadzam",
+          "Trudno powiedzieć"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [
+          "Dzięki AI szybciej wykonuję zadania marketingowe",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców",
+          "AI pomaga mi tworzyć więcej pomysłów i treści",
+          "AI ułatwia analizę danych i podejmowanie decyzji",
+          "AI poprawia jakość przygotowywanych materiałów"
+        ],
+        "page": 0,
+        "section": "IV. Efekty, bariery i odpowiedzialne korzystanie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_effects"
+      },
+      {
+        "id": "P12",
+        "title": "Jak dużą przeszkodą są dla Pana/Pani poniższe kwestie?",
+        "type": "grid",
+        "required": true,
+        "description": "",
+        "options": [
+          "Nie stanowi bariery",
+          "Mała bariera",
+          "Umiarkowana bariera",
+          "Duża bariera",
+          "Bardzo duża bariera",
+          "Trudno powiedzieć"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [
+          "Nieprawidłowe lub zmyślone odpowiedzi AI",
+          "Ochrona danych i poufność",
+          "Prawa autorskie i zgodność z prawem",
+          "Treści niedopasowane do stylu lub jakości marki",
+          "Stronnicze lub dyskryminujące odpowiedzi",
+          "Brak umiejętności lub jasnych procedur",
+          "Koszty albo trudności wdrożenia i integracji"
+        ],
+        "page": 0,
+        "section": "IV. Efekty, bariery i odpowiedzialne korzystanie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_barriers"
+      },
+      {
+        "id": "P13",
+        "title": "Co robi Pan/Pani lub Pana/Pani organizacja, aby ograniczyć ryzyko związane z AI?",
+        "type": "checkboxes",
+        "required": true,
+        "description": "",
+        "options": [
+          "Treści są sprawdzane przez człowieka",
+          "Nie wprowadzamy do AI danych poufnych ani osobowych",
+          "Sprawdzamy fakty i źródła",
+          "Materiały zatwierdza przełożony lub klient",
+          "Stosujemy szkolenia lub wewnętrzne zasady dotyczące AI",
+          "Informujemy o użyciu AI, gdy jest to wymagane",
+          "Nie stosujemy formalnych praktyk",
+          "Nie korzystam z AI / nie dotyczy — proszę wybrać tylko tę odpowiedź"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "IV. Efekty, bariery i odpowiedzialne korzystanie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [
+          "Nie korzystam z AI / nie dotyczy — proszę wybrać tylko tę odpowiedź"
+        ],
+        "topic": "ai_risk_practices"
+      },
+      {
+        "id": "P14",
+        "title": "Czy uczestniczył(a) Pan/Pani w szkoleniu dotyczącym wykorzystania AI w marketingu lub komunikacji?",
+        "type": "single_choice",
+        "required": true,
+        "description": "",
+        "options": [
+          "Tak",
+          "Nie, ale planuję",
+          "Nie i nie planuję"
+        ],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "IV. Efekty, bariery i odpowiedzialne korzystanie",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_training"
+      },
+      {
+        "id": "P15",
+        "title": "Jeśli chce Pan/Pani, proszę krótko opisać jedną korzyść, jeden problem lub jeden warunek odpowiedzialnego wykorzystania AI w marketingu.",
+        "type": "paragraph",
+        "required": false,
+        "description": "",
+        "options": [],
+        "has_other": false,
+        "scale_min": null,
+        "scale_max": null,
+        "scale_labels": [],
+        "rows": [],
+        "page": 0,
+        "section": "V. Pytanie otwarte",
+        "entry_ids": [],
+        "date_has_year": true,
+        "date_has_time": false,
+        "go_to": {},
+        "exclusive": [],
+        "topic": "ai_open_view"
+      }
+    ],
+    "description": "Ankieta jest częścią międzynarodowego badania. Jest skierowana do osób, które w ciągu ostatnich 12 miesięcy zajmowały się marketingiem lub promocją, niezależnie od kraju wykonywania pracy. Udział jest dobrowolny i anonimowy. Nie zbieramy danych umożliwiających bezpośrednią identyfikację. Wyniki będą analizowane wyłącznie zbiorczo. Wypełnienie ankiety zajmuje około 5–6 minut. W ankiecie „AI” oznacza narzędzia takie jak ChatGPT, Gemini, Claude, Copilot, Canva AI oraz funkcje AI w systemach reklamowych i marketingowych.\n",
+    "source": "surveys/ai_marketing/pl.yaml",
+    "google": null,
+    "language": "PL"
+  },
+  "responses": [
+    {
+      "persona_id": "P003",
+      "persona_name": "Aleksandra Kowalczyk",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+        "P5": "4–6 lat",
+        "P6": "2–9 osób",
+        "P7": "Tak",
+        "P8": "Raz w tygodniu",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
+          "Planowanie strategii, celów i KPI": "W niewielu zadaniach",
+          "Segmentacja, tworzenie person i personalizacja": "Nie wykonuję takich zadań",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "W niewielu zadaniach",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W części zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "W niewielu zadaniach",
+          "Analiza wyników i raportowanie": "Nie wykonuję takich zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Raczej się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Ani się zgadzam, ani nie zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Zdecydowanie się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Ani się zgadzam, ani nie zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Raczej się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Umiarkowana bariera",
+          "Ochrona danych i poufność": "Mała bariera",
+          "Prawa autorskie i zgodność z prawem": "Mała bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Duża bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Trudno powiedzieć",
+          "Brak umiejętności lub jasnych procedur": "Mała bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Umiarkowana bariera"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka"
+        ],
+        "P14": "Nie i nie planuję",
+        "P15": null
+      }
+    },
+    {
+      "persona_id": "P004",
+      "persona_name": "Jakub Kaczmarek",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Nie",
+        "P2": null,
+        "P3": null,
+        "P4": null,
+        "P5": null,
+        "P6": null,
+        "P7": null,
+        "P8": null,
+        "P9": null,
+        "P10": null,
+        "P11": null,
+        "P12": null,
+        "P13": null,
+        "P14": null,
+        "P15": null
+      }
+    },
+    {
+      "persona_id": "P019",
+      "persona_name": "Jakub Lewandowski",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Nie",
+        "P3": null,
+        "P4": null,
+        "P5": null,
+        "P6": null,
+        "P7": null,
+        "P8": null,
+        "P9": null,
+        "P10": null,
+        "P11": null,
+        "P12": null,
+        "P13": null,
+        "P14": null,
+        "P15": null
+      }
+    },
+    {
+      "persona_id": "P025",
+      "persona_name": "Weronika Piotrowska",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Pracuję jako freelancer/freelancerka",
+        "P5": "Powyżej 10 lat",
+        "P6": "Trudno powiedzieć / nie dotyczy",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
+          "AI w systemach reklamowych lub automatyzacji marketingu"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "W części zadań",
+          "Planowanie strategii, celów i KPI": "W części zadań",
+          "Segmentacja, tworzenie person i personalizacja": "W większości zadań",
+          "Pisanie treści promocyjnych": "Prawie zawsze",
+          "Tworzenie lub edycja obrazów i wideo": "Prawie zawsze",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W niewielu zadaniach",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "Prawie zawsze",
+          "Analiza wyników i raportowanie": "W części zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Zdecydowanie się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Zdecydowanie się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Zdecydowanie się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Zdecydowanie się zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Zdecydowanie się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Nie stanowi bariery",
+          "Ochrona danych i poufność": "Nie stanowi bariery",
+          "Prawa autorskie i zgodność z prawem": "Mała bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Umiarkowana bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Nie stanowi bariery",
+          "Brak umiejętności lub jasnych procedur": "Nie stanowi bariery",
+          "Koszty albo trudności wdrożenia i integracji": "Nie stanowi bariery"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Nie wprowadzamy do AI danych poufnych ani osobowych",
+          "Materiały zatwierdza przełożony lub klient"
+        ],
+        "P14": "Tak",
+        "P15": "Oszczędność czasu przy raportach."
+      }
+    },
+    {
+      "persona_id": "P027",
+      "persona_name": "Paulina Nowicka",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Austria",
+        "P4": "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+        "P5": "Mniej niż 1 rok",
+        "P6": "10–49 osób",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "AI w systemach reklamowych lub automatyzacji marketingu"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
+          "Planowanie strategii, celów i KPI": "W części zadań",
+          "Segmentacja, tworzenie person i personalizacja": "Nie wykonuję takich zadań",
+          "Pisanie treści promocyjnych": "Prawie zawsze",
+          "Tworzenie lub edycja obrazów i wideo": "W niewielu zadaniach",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W części zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "Nie wykonuję takich zadań",
+          "Analiza wyników i raportowanie": "W większości zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Zdecydowanie się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Raczej się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Zdecydowanie się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Zdecydowanie się zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Ani się zgadzam, ani nie zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Nie stanowi bariery",
+          "Ochrona danych i poufność": "Nie stanowi bariery",
+          "Prawa autorskie i zgodność z prawem": "Umiarkowana bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Nie stanowi bariery",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Nie stanowi bariery",
+          "Brak umiejętności lub jasnych procedur": "Mała bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Mała bariera"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Sprawdzamy fakty i źródła"
+        ],
+        "P14": "Nie, ale planuję",
+        "P15": null
+      }
+    },
+    {
+      "persona_id": "P031",
+      "persona_name": "Paulina Pawlak",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": {
+          "other": "marketing obok głównej pracy"
+        },
+        "P5": "Mniej niż 1 rok",
+        "P6": "50–249 osób",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
+          "Planowanie strategii, celów i KPI": "Nie wykonuję takich zadań",
+          "Segmentacja, tworzenie person i personalizacja": "W niewielu zadaniach",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "W większości zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "Nie wykonuję takich zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "W części zadań",
+          "Analiza wyników i raportowanie": "W części zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Zdecydowanie się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Ani się zgadzam, ani nie zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Raczej się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Raczej się zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Zdecydowanie się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Umiarkowana bariera",
+          "Ochrona danych i poufność": "Mała bariera",
+          "Prawa autorskie i zgodność z prawem": "Trudno powiedzieć",
+          "Treści niedopasowane do stylu lub jakości marki": "Nie stanowi bariery",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Nie stanowi bariery",
+          "Brak umiejętności lub jasnych procedur": "Mała bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Nie stanowi bariery"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Materiały zatwierdza przełożony lub klient",
+          "Informujemy o użyciu AI, gdy jest to wymagane"
+        ],
+        "P14": "Nie, ale planuję",
+        "P15": "Szybsze pierwsze wersje przy odpowiedziach dla klientów, ale i tak dużo popprawiam."
+      }
+    },
+    {
+      "persona_id": "P033",
+      "persona_name": "Dominika Kwiatkowska",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+        "P5": "1–3 lata",
+        "P6": "50–249 osób",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "W części zadań",
+          "Planowanie strategii, celów i KPI": "W większości zadań",
+          "Segmentacja, tworzenie person i personalizacja": "W większości zadań",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "Nie wykonuję takich zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W niewielu zadaniach",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "W części zadań",
+          "Analiza wyników i raportowanie": "Nie wykonuję takich zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Raczej się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Raczej się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Raczej się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Ani się zgadzam, ani nie zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Ani się zgadzam, ani nie zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Umiarkowana bariera",
+          "Ochrona danych i poufność": "Mała bariera",
+          "Prawa autorskie i zgodność z prawem": "Umiarkowana bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Mała bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Mała bariera",
+          "Brak umiejętności lub jasnych procedur": "Mała bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Umiarkowana bariera"
+        },
+        "P13": [
+          "Nie stosujemy formalnych praktyk"
+        ],
+        "P14": "Nie, ale planuję",
+        "P15": "Największy problem to to, że aonamenty ciągle drożeją."
+      }
+    },
+    {
+      "persona_id": "P040",
+      "persona_name": "Marta Szymańska",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Pracuję w agencji marketingowej lub reklamowej",
+        "P5": "Mniej niż 1 rok",
+        "P6": "10–49 osób",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "W części zadań",
+          "Planowanie strategii, celów i KPI": "W niewielu zadaniach",
+          "Segmentacja, tworzenie person i personalizacja": "W niewielu zadaniach",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "W części zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W niewielu zadaniach",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "W niewielu zadaniach",
+          "Analiza wyników i raportowanie": "W większości zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Raczej się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Raczej się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Raczej się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Raczej się nie zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Raczej się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Trudno powiedzieć",
+          "Ochrona danych i poufność": "Umiarkowana bariera",
+          "Prawa autorskie i zgodność z prawem": "Umiarkowana bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Umiarkowana bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Mała bariera",
+          "Brak umiejętności lub jasnych procedur": "Umiarkowana bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Mała bariera"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Nie wprowadzamy do AI danych poufnych ani osobowych",
+          "Stosujemy szkolenia lub wewnętrzne zasady dotyczące AI"
+        ],
+        "P14": "Tak",
+        "P15": "OK, dopóki ktoś, kto zna markę, wszystko sprawdza i jesteśmy uczciwi wobec klientów."
+      }
+    },
+    {
+      "persona_id": "P052",
+      "persona_name": "Wojciech Mazur",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Pracuję jako freelancer/freelancerka",
+        "P5": "Powyżej 10 lat",
+        "P6": "Pracuję samodzielnie / firma jednoosobowa",
+        "P7": "Tak",
+        "P8": "Kilka razy w tygodniu",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Analityka, prognozowanie lub segmentacja odbiorców",
+          {
+            "other": "tłumaczenie (DeepL)"
+          }
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
+          "Planowanie strategii, celów i KPI": "Nie wykonuję takich zadań",
+          "Segmentacja, tworzenie person i personalizacja": "Nie wykonuję takich zadań",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "Nie wykonuję takich zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "Nie wykonuję takich zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "Nie wykonuję takich zadań",
+          "Analiza wyników i raportowanie": "W części zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Zdecydowanie się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Raczej się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Zdecydowanie się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Raczej się zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Raczej się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Mała bariera",
+          "Ochrona danych i poufność": "Mała bariera",
+          "Prawa autorskie i zgodność z prawem": "Umiarkowana bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Umiarkowana bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Mała bariera",
+          "Brak umiejętności lub jasnych procedur": "Umiarkowana bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Trudno powiedzieć"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Materiały zatwierdza przełożony lub klient",
+          "Nie stosujemy formalnych praktyk"
+        ],
+        "P14": "Nie i nie planuję",
+        "P15": "OK, dopóki ktoś, kto zna markę, wszystko sprawdza i jesteśmy uczciwi wobec klientów."
+      }
+    },
+    {
+      "persona_id": "P057",
+      "persona_name": "Wojciech Adamczyk",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+        "P5": "Powyżej 10 lat",
+        "P6": "2–9 osób",
+        "P7": "Nie",
+        "P8": null,
+        "P9": null,
+        "P10": null,
+        "P11": null,
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Umiarkowana bariera",
+          "Ochrona danych i poufność": "Duża bariera",
+          "Prawa autorskie i zgodność z prawem": "Umiarkowana bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Mała bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Nie stanowi bariery",
+          "Brak umiejętności lub jasnych procedur": "Duża bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Umiarkowana bariera"
+        },
+        "P13": [
+          "Nie korzystam z AI / nie dotyczy — proszę wybrać tylko tę odpowiedź"
+        ],
+        "P14": "Nie, ale planuję",
+        "P15": "Nie korzystam z AI, nie ufam temu przy pracy dla klientów. Poza tym ludzie wklejają dane klientów bez zastanowienia"
+      }
+    },
+    {
+      "persona_id": "P062",
+      "persona_name": "Julia Woźniak",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": {
+          "other": "e-commerce"
+        },
+        "P5": "Powyżej 10 lat",
+        "P6": "2–9 osób",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
+          "AI w systemach reklamowych lub automatyzacji marketingu",
+          "Analityka, prognozowanie lub segmentacja odbiorców",
+          {
+            "other": "tłumaczenie (DeepL)"
+          }
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "Nie wykonuję takich zadań",
+          "Planowanie strategii, celów i KPI": "W niewielu zadaniach",
+          "Segmentacja, tworzenie person i personalizacja": "W niewielu zadaniach",
+          "Pisanie treści promocyjnych": "W większości zadań",
+          "Tworzenie lub edycja obrazów i wideo": "Nie wykonuję takich zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W części zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "W większości zadań",
+          "Analiza wyników i raportowanie": "W większości zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Ani się zgadzam, ani nie zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Ani się zgadzam, ani nie zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Raczej się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Ani się zgadzam, ani nie zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Raczej się nie zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Mała bariera",
+          "Ochrona danych i poufność": "Mała bariera",
+          "Prawa autorskie i zgodność z prawem": "Mała bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Umiarkowana bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Nie stanowi bariery",
+          "Brak umiejętności lub jasnych procedur": "Umiarkowana bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Nie stanowi bariery"
+        },
+        "P13": [
+          "Sprawdzamy fakty i źródła"
+        ],
+        "P14": "Nie, ale planuję",
+        "P15": null
+      }
+    },
+    {
+      "persona_id": "P063",
+      "persona_name": "Bartosz Dąbrowski",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Tak",
+        "P3": "Polska",
+        "P4": "Prowadzę własną firmę i samodzielnie zajmuję się marketingiem",
+        "P5": "Powyżej 10 lat",
+        "P6": "Trudno powiedzieć / nie dotyczy",
+        "P7": "Tak",
+        "P8": "Codziennie",
+        "P9": [
+          "Generowanie tekstu (np. ChatGPT, Gemini, Claude, Copilot)",
+          "Tworzenie obrazów lub wideo (np. Midjourney, DALL·E, Canva AI)",
+          "AI w systemach reklamowych lub automatyzacji marketingu",
+          "Analityka, prognozowanie lub segmentacja odbiorców"
+        ],
+        "P10": {
+          "Analiza odbiorców i rynku": "W większości zadań",
+          "Planowanie strategii, celów i KPI": "W większości zadań",
+          "Segmentacja, tworzenie person i personalizacja": "Nie wykonuję takich zadań",
+          "Pisanie treści promocyjnych": "Prawie zawsze",
+          "Tworzenie lub edycja obrazów i wideo": "Nie wykonuję takich zadań",
+          "Prowadzenie lub optymalizacja kampanii reklamowych": "W większości zadań",
+          "Kontakt z odbiorcami, obsługa klienta i chatboty": "Nie wykonuję takich zadań",
+          "Analiza wyników i raportowanie": "W większości zadań"
+        },
+        "P11": {
+          "Dzięki AI szybciej wykonuję zadania marketingowe": "Zdecydowanie się zgadzam",
+          "AI pomaga mi lepiej dopasować komunikację do odbiorców": "Raczej się zgadzam",
+          "AI pomaga mi tworzyć więcej pomysłów i treści": "Zdecydowanie się zgadzam",
+          "AI ułatwia analizę danych i podejmowanie decyzji": "Raczej się zgadzam",
+          "AI poprawia jakość przygotowywanych materiałów": "Zdecydowanie się zgadzam"
+        },
+        "P12": {
+          "Nieprawidłowe lub zmyślone odpowiedzi AI": "Nie stanowi bariery",
+          "Ochrona danych i poufność": "Umiarkowana bariera",
+          "Prawa autorskie i zgodność z prawem": "Mała bariera",
+          "Treści niedopasowane do stylu lub jakości marki": "Mała bariera",
+          "Stronnicze lub dyskryminujące odpowiedzi": "Trudno powiedzieć",
+          "Brak umiejętności lub jasnych procedur": "Mała bariera",
+          "Koszty albo trudności wdrożenia i integracji": "Mała bariera"
+        },
+        "P13": [
+          "Treści są sprawdzane przez człowieka",
+          "Nie wprowadzamy do AI danych poufnych ani osobowych",
+          "Nie stosujemy formalnych praktyk"
+        ],
+        "P14": "Nie i nie planuję",
+        "P15": "Szybsze piersze wersje przy raportach, ale i tak dużo poprawiam."
+      }
+    },
+    {
+      "persona_id": "P085",
+      "persona_name": "Paweł Michalak",
+      "generated_at": "2026-09-24T21:55:02+00:00",
+      "synthetic": true,
+      "mode": "offline",
+      "model": null,
+      "answers": {
+        "P1": "Tak",
+        "P2": "Nie",
+        "P3": null,
+        "P4": null,
+        "P5": null,
+        "P6": null,
+        "P7": null,
+        "P8": null,
+        "P9": null,
+        "P10": null,
+        "P11": null,
+        "P12": null,
+        "P13": null,
+        "P14": null,
+        "P15": null
+      }
+    }
+  ]
+}

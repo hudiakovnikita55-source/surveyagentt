@@ -1,4 +1,9 @@
-"""Deterministic generator of diverse European personas who use AI at work."""
+"""Deterministic generator of diverse European personas who use AI at work.
+
+audience="general"   people across 48 professions who use AI at work (the default sample);
+audience="marketing" people who did marketing or promotion in the last 12 months (most, not all, use AI),
+                     with a `marketing` block describing that work, plus a few non-marketers.
+"""
 
 from __future__ import annotations
 
@@ -159,13 +164,21 @@ class Persona:
     ai: dict = field(default_factory=dict)
     personality: dict = field(default_factory=dict)
     style: dict = field(default_factory=dict)
+    marketing: dict = field(default_factory=dict)  # only for the "marketing" audience
 
     @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def uses_ai(self) -> bool:
+        return self.ai.get("frequency") != "never"
+
     def to_dict(self) -> dict:
-        return asdict(self)
+        data = asdict(self)
+        if not data["marketing"]:
+            del data["marketing"]
+        return data
 
     @classmethod
     def from_dict(cls, data: dict) -> "Persona":
@@ -222,13 +235,13 @@ def _country_phrase(name: str) -> str:
     return f"the {name}" if name in ("Netherlands", "United Kingdom", "United States") else name
 
 
-def _allocate_countries(count: int) -> list[str]:
-    """Quota allocation proportional to (population x AI adoption)^0.7.
+def _allocate_countries(count: int, boost: dict[str, float] | None = None) -> list[str]:
+    """Quota allocation proportional to (population x AI adoption)^0.7, times an optional per-country boost.
 
     Every mid-sized/large country gets at least one persona when count allows it,
     so the sample stays diverse; micro-states only appear through remainders.
     """
-    raw = {c: (d["pop"] * d["ai"]) ** 0.7 for c, d in geo.COUNTRIES.items()}
+    raw = {c: (d["pop"] * d["ai"]) ** 0.7 * (boost or {}).get(c, 1.0) for c, d in geo.COUNTRIES.items()}
     core = [c for c, d in geo.COUNTRIES.items() if d["pop"] >= 1.3]
     minimum = {c: 1 for c in core} if count >= 2 * len(core) else {}
     remaining = count - sum(minimum.values())
@@ -271,10 +284,23 @@ def _income_band(value: int) -> str:
 # --------------------------------------------------------------------------- #
 
 class PersonaGenerator:
-    def __init__(self, seed: int = 42, email_domain: str = "example.com"):
+    def __init__(self, seed: int = 42, email_domain: str = "example.com", audience: str = "general",
+                 country_boost: dict[str, float] | None = None):
         self.rng = random.Random(seed)
         self.email_domain = email_domain
-        self.prof_weights = {p["key"]: p["weight"] for p in work.PROFESSIONS}
+        self.audience = audience
+        self.country_boost = country_boost
+        if audience == "general":
+            self.prof_weights = {p["key"]: p["weight"] for p in work.PROFESSIONS}
+            self.prof_decay = 0.55  # strong decay: as many different professions as possible
+        elif audience == "marketing":
+            self.prof_weights = dict(work.MARKETING_AUDIENCE)
+            others = [p["key"] for p in work.PROFESSIONS if p["key"] not in self.prof_weights and p["weight"] > 0]
+            share = sum(self.prof_weights.values()) * work.NON_MARKETER_SHARE / (1 - work.NON_MARKETER_SHARE)
+            self.prof_weights.update({k: share / len(others) for k in others})
+            self.prof_decay = 0.97  # keep the proportions of MARKETING_AUDIENCE
+        else:
+            raise ValueError(f"unknown audience {audience!r} (general, marketing)")
         self.city_use: dict[tuple[str, str], int] = {}
         self.used_names: set[str] = set()
         self.used_surnames: set[tuple[str, str]] = set()
@@ -282,7 +308,7 @@ class PersonaGenerator:
 
     # -- public ------------------------------------------------------------ #
     def generate(self, count: int = 100) -> list[Persona]:
-        countries = _allocate_countries(count)
+        countries = _allocate_countries(count, self.country_boost)
         self.rng.shuffle(countries)
         return [self._persona(i + 1, cc) for i, cc in enumerate(countries)]
 
@@ -292,7 +318,7 @@ class PersonaGenerator:
         country = geo.COUNTRIES[cc]
 
         prof_key = _pick(rng, self.prof_weights)
-        self.prof_weights[prof_key] *= 0.55  # keep the mix diverse
+        self.prof_weights[prof_key] *= self.prof_decay  # keep the mix diverse
         prof = work.PROFESSIONS_BY_KEY[prof_key]
 
         city, local_language, pool_key = self._city(cc)
@@ -328,6 +354,9 @@ class PersonaGenerator:
         attitude = self._attitude(prof, age, personality)
         ai = self._ai_profile(prof, cc, native, attitude, employment, size, industry, title)
         style = self._style(personality, attitude, age, native, english, cc, origin)
+        marketing = {}
+        if self.audience == "marketing":
+            marketing = self._marketing(prof, title, employment, industry, years, age, ai)
 
         household = self._household(age)
         hobbies = _sample(rng, {h: 1 for h in work.HOBBIES}, 2)
@@ -345,7 +374,7 @@ class PersonaGenerator:
             employment_type=employment, industry=industry, company_size=size, work_mode=work_mode,
             years_experience=years, income_eur=income, income_band=_income_band(income),
             household=household, hobbies=hobbies, email=self._email(first, last), bio="",
-            ai=ai, personality=personality, style=style,
+            ai=ai, personality=personality, style=style, marketing=marketing,
         )
         persona.bio = self._bio(persona)
         return persona
@@ -833,6 +862,165 @@ class PersonaGenerator:
             pet_peeve=rng.choice(peeves), outlook=outlook, job_impact=job_impact,
         )
 
+    # -- marketing audience --------------------------------------------- #
+    def _marketing(self, prof, title, employment, industry, years, age, ai) -> dict:
+        """Marketing work in the last 12 months. May turn `ai` into a non-user profile or add tools to it."""
+        rng = self.rng
+        key = prof["key"]
+        consents = rng.random() > 0.02
+        active = key in work.MARKETING_TASK_PROFILES
+        if key == "founder" and "CTO" in title:
+            active = rng.random() < 0.4
+        elif key == "sales":
+            active = rng.random() < 0.75
+        if not active:
+            return dict(consents=consents, active=False)
+
+        if employment == "freelancer":
+            setting = "freelance"
+        elif employment in ("self_employed", "founder"):
+            setting = "own_business"
+        elif "agency" in industry.lower():
+            setting = "agency"
+        else:
+            setting = "in_house"
+        other_role = None
+        if setting == "in_house":
+            p_other = {"sales": 0.7, "graphic_designer": 0.5, "video_creator": 0.5, "pr_comms": 0.3,
+                       "ecommerce": 0.25}.get(key, 0.03)
+            if rng.random() < p_other:
+                setting = "other"
+                other_role = {"sales": "sales", "graphic_designer": "design", "video_creator": "video",
+                              "pr_comms": "pr", "ecommerce": "ecommerce"}.get(key, "marketing")
+        marketing_years = min(years, rng.randint(0, max(1, years))) if key == "sales" else years
+
+        attitude = ai["attitude"]
+        p_non_user = {"enthusiast": 0.0, "pragmatist": 0.04, "cautious": 0.22, "skeptic": 0.45}[attitude]
+        if key in ("small_business", "content_writer", "graphic_designer"):
+            p_non_user *= 1.5
+        if age >= 50:
+            p_non_user *= 1.4
+        uses_ai = rng.random() >= p_non_user
+
+        profile = work.MARKETING_TASK_PROFILES[key]
+        performs = {t: rng.random() < profile[t] for t in work.MARKETING_TASKS}
+        if not any(performs.values()):
+            performs["copywriting"] = True
+        if uses_ai:
+            self._marketing_frequency(ai)
+            tasks = self._ai_task_levels(performs, ai)
+            self._add_marketing_tools(tasks, setting, ai)
+        else:
+            tasks = {t: "never" if performs[t] else "no" for t in work.MARKETING_TASKS}
+            self._make_non_user(ai, employment)
+        kinds = [k for k in ("text", "visual", "ads", "analytics", "chatbot", "other")
+                 if any(t in work.TOOL_KINDS[k] for t in ai["tools"])]
+
+        policy = ai["employer_policy"] or ""
+        employer_training = not any(x in ai["training"] for x in ("self-taught", "no training"))
+        formal = employer_training or any(x in policy for x in ("guidelines", "approved", "encouraged"))
+        careful = attitude in ("cautious", "skeptic")
+        if not uses_ai:
+            practices = ["not_applicable"]
+        else:
+            practices = []
+            if rng.random() < (0.97 if careful else 0.88):
+                practices.append("human_review")
+            strict = "guidelines" in policy or "approved" in policy
+            if rng.random() < (0.85 if strict else 0.4 + (0.2 if careful else 0)):
+                practices.append("no_confidential_data")
+            fact = {"enthusiast": 0.4, "pragmatist": 0.55, "cautious": 0.75, "skeptic": 0.75}[attitude]
+            if rng.random() < fact + (0.15 if key in ("pr_comms", "content_writer") else 0):
+                practices.append("fact_check")
+            if rng.random() < {"agency": 0.7, "freelance": 0.65, "in_house": 0.55, "other": 0.45,
+                               "own_business": 0.08}[setting]:
+                practices.append("approval")
+            if formal and rng.random() < 0.8:
+                practices.append("training_guidelines")
+            if rng.random() < 0.18 + (0.12 if key == "pr_comms" else 0):
+                practices.append("disclosure")
+            if (not formal and setting in ("own_business", "freelance") and rng.random() < 0.45) or not practices:
+                practices.append("none")
+
+        if not uses_ai:
+            training = "planned" if rng.random() < 0.25 else "no"
+        elif employer_training:
+            training = "yes" if rng.random() < 0.85 else "planned"
+        else:
+            r = rng.random()
+            p_yes = {"enthusiast": 0.3, "pragmatist": 0.15, "cautious": 0.08, "skeptic": 0.03}[attitude]
+            p_plan = {"enthusiast": 0.45, "pragmatist": 0.4, "cautious": 0.35, "skeptic": 0.12}[attitude]
+            training = "yes" if r < p_yes else "planned" if r < p_yes + p_plan else "no"
+
+        return dict(consents=consents, active=True, setting=setting, other_role=other_role, years=marketing_years,
+                    uses_ai=uses_ai, tasks=tasks, ai_tool_kinds=kinds, risk_practices=practices,
+                    ai_training=training)
+
+    def _marketing_frequency(self, ai: dict) -> None:
+        """The general sample is people who already use AI at work a lot; a sample of all marketers uses it
+        less often on average, so shift some personas down a level or two (hours saved shrink with it)."""
+        shift = int(_pick(self.rng, {"0": 0.5, "1": 0.35, "2": 0.15}))
+        if shift:
+            ai["frequency"] = FREQUENCIES[min(len(FREQUENCIES) - 1, FREQUENCIES.index(ai["frequency"]) + shift)]
+            ai["hours_saved_per_week"] = round(ai["hours_saved_per_week"] * 0.65 ** shift * 2) / 2
+
+    def _ai_task_levels(self, performs: dict, ai: dict) -> dict:
+        rng = self.rng
+        intensity = {"several times a day": 1.0, "daily": 0.85, "a few times a week": 0.65, "about once a week": 0.45,
+                     "a few times a month": 0.3}[ai["frequency"]]
+        lean = {"enthusiast": 0.1, "pragmatist": 0.0, "cautious": -0.08, "skeptic": -0.15}[ai["attitude"]]
+        uses = " ".join(ai["use_cases"]).lower()
+        has_visual = any(t in work.TOOL_KINDS["visual"] for t in ai["tools"])
+        levels = {}
+        for t in work.MARKETING_TASKS:
+            if not performs[t]:
+                levels[t] = "no"
+                continue
+            score = work.MARKETING_TASK_AI_AFFINITY[t] * (0.25 + 0.6 * intensity) + lean + rng.gauss(0, 0.15)
+            if any(word in uses for word in work.MARKETING_TASK_WORDS[t]):
+                score += 0.12
+            if t == "visuals" and not has_visual:
+                score *= 0.55
+            idx = 0 if score < 0.12 else 1 if score < 0.3 else 2 if score < 0.5 else 3 if score < 0.72 else 4
+            levels[t] = work.AI_TASK_LEVELS[idx]
+        if all(v in ("no", "never") for v in levels.values()):  # uses AI, so at least somewhere
+            top = max((t for t in levels if levels[t] != "no"), key=lambda t: work.MARKETING_TASK_AI_AFFINITY[t])
+            levels[top] = "few"
+        return levels
+
+    def _add_marketing_tools(self, tasks: dict, setting: str, ai: dict) -> None:
+        """Ad platforms, analytics and chatbots come with the job, whatever the profession's usual tool list."""
+        rng = self.rng
+        busy = ("some", "most", "almost always")
+
+        def has(kind):
+            return any(t in work.TOOL_KINDS[kind] for t in ai["tools"])
+
+        wanted = []
+        if tasks["ads"] in busy and not has("ads") and rng.random() < 0.55:
+            wanted.append("ads")
+        if (tasks["reporting"] in busy or tasks["segmentation"] in busy) and not has("analytics") and rng.random() < 0.3:
+            wanted.append("analytics")
+        if tasks["community"] in busy and setting in ("in_house", "own_business") and not has("chatbot") \
+                and rng.random() < 0.35:
+            wanted.append("chatbot")
+        for kind in wanted:
+            ai["tools"].append(rng.choice(work.MARKETING_EXTRA_TOOLS[kind]))
+
+    def _make_non_user(self, ai: dict, employment: str) -> None:
+        rng = self.rng
+        reasons = list(work.AI_NON_USE_REASONS)
+        if "discouraged" not in (ai["employer_policy"] or ""):
+            reasons.remove("the employer does not allow AI tools")
+        if employment == "employee":
+            reasons.remove("does not see the need in a business this small")
+        ai.update(tools=[], primary_tool="none", frequency="never", since_year=None, use_cases=[],
+                  skill_level="beginner", hours_saved_per_week=0, access="does not use AI tools",
+                  satisfaction_1_10=rng.randint(2, 5), trust_1_5=rng.randint(1, 2), good_experience="",
+                  bad_experience="", non_use_reason=rng.choice(reasons),
+                  outlook=rng.choice(["might try it next year", "does not plan to start using it"]),
+                  job_impact="hardly changes the job itself")
+
     def _style(self, p: dict, attitude: str, age: int, native, english, cc, origin) -> dict:
         rng = self.rng
         c = p["conscientiousness"]
@@ -931,9 +1119,12 @@ class PersonaGenerator:
         else:
             role = f"{_article(p.job_title)} {p.job_title}"
         uses = p.ai["use_cases"][:2]
-        sentence_ai = (f"Uses AI at work {p.ai['frequency']} since {p.ai['since_year']}, "
-                       f"mainly {p.ai['primary_tool']}, for {uses[0]}"
-                       + (f" and {uses[1]}" if len(uses) > 1 else "") + ".")
+        if not p.uses_ai:
+            sentence_ai = f"Does not use AI tools for work ({p.ai['non_use_reason']})."
+        else:
+            sentence_ai = (f"Uses AI at work {p.ai['frequency']} since {p.ai['since_year']}, "
+                           f"mainly {p.ai['primary_tool']}, for {uses[0]}"
+                           + (f" and {uses[1]}" if len(uses) > 1 else "") + ".")
         return (f"{p.first_name} ({p.age}) is {role} and {where}. {p.background}. "
                 f"{sentence_ai} {rng.choice(ATTITUDE_PHRASES[p.ai['attitude']])}")
 
@@ -942,8 +1133,25 @@ class PersonaGenerator:
 # Public API
 # --------------------------------------------------------------------------- #
 
-def generate_personas(count: int = 100, seed: int = 42, email_domain: str = "example.com") -> list[Persona]:
-    return PersonaGenerator(seed=seed, email_domain=email_domain).generate(count)
+def generate_personas(count: int = 100, seed: int = 42, email_domain: str = "example.com", audience: str = "general",
+                      country_boost: dict[str, float] | None = None) -> list[Persona]:
+    return PersonaGenerator(seed=seed, email_domain=email_domain, audience=audience,
+                            country_boost=country_boost).generate(count)
+
+
+def preferred_language(p: Persona, available: list[str]) -> str:
+    """Which language version of a questionnaire a persona would pick, given version codes like ["EN", "PL"]:
+    a native language, else the local language if they speak it at B2 or better, else English."""
+    by_name = {geo.LANGUAGE_CODES.get(code, code): code for code in available}
+    for language in p.native_languages:
+        if language in by_name:
+            return by_name[language]
+    local = geo.COUNTRIES[p.country_code]["language"]
+    for entry in p.other_languages:
+        name, _, level = entry.partition(" (")
+        if name == local and name in by_name and level.rstrip(")") in ("B2", "C1", "C2"):
+            return by_name[name]
+    return "EN" if "EN" in available else available[0]
 
 
 def save_personas(personas: list[Persona], path: str | Path) -> None:
@@ -973,18 +1181,34 @@ def persona_card(p: Persona) -> str:
         f"Organisation: {p.industry}; {p.company_size} people; works {p.work_mode}.",
         f"Income: about €{p.income_eur:,} gross per year ({p.income_band}).",
         f"Contact e-mail (use only if a question requires an e-mail): {p.email}",
-        "AI at work:",
-        f"- tools: {', '.join(ai['tools'])} (main: {ai['primary_tool']}); uses them {ai['frequency']}, since {ai['since_year']}",
-        f"- used for: {'; '.join(ai['use_cases'])}",
-        f"- skill level: {ai['skill_level']}; saves roughly {ai['hours_saved_per_week']} h per week",
-        f"- access/payment: {ai['access']}",
-        f"- employer policy: {ai['employer_policy'] or 'not applicable (own rules)'}; training: {ai['training']}",
-        f"- attitude: {ai['attitude']}; satisfaction {ai['satisfaction_1_10']}/10; trust in outputs {ai['trust_1_5']}/5",
-        f"- concerns: {'; '.join(ai['concerns'])}",
-        f"- a good experience: {ai['good_experience']}",
-        f"- a bad experience: {ai['bad_experience']}",
-        f"- pet peeve: {ai['pet_peeve']}",
-        f"- outlook: {ai['outlook']}; impact on job: {ai['job_impact']}",
+    ]
+    if p.uses_ai:
+        lines += [
+            "AI at work:",
+            f"- tools: {', '.join(ai['tools'])} (main: {ai['primary_tool']}); uses them {ai['frequency']}, "
+            f"since {ai['since_year']}",
+            f"- used for: {'; '.join(ai['use_cases'])}",
+            f"- skill level: {ai['skill_level']}; saves roughly {ai['hours_saved_per_week']} h per week",
+            f"- access/payment: {ai['access']}",
+            f"- employer policy: {ai['employer_policy'] or 'not applicable (own rules)'}; training: {ai['training']}",
+            f"- attitude: {ai['attitude']}; satisfaction {ai['satisfaction_1_10']}/10; trust in outputs {ai['trust_1_5']}/5",
+            f"- concerns: {'; '.join(ai['concerns'])}",
+            f"- a good experience: {ai['good_experience']}",
+            f"- a bad experience: {ai['bad_experience']}",
+            f"- pet peeve: {ai['pet_peeve']}",
+            f"- outlook: {ai['outlook']}; impact on job: {ai['job_impact']}",
+        ]
+    else:
+        lines += [
+            f"AI at work: does NOT use any AI tools for work (reason: {ai['non_use_reason']}).",
+            f"- employer policy: {ai['employer_policy'] or 'not applicable (own rules)'}",
+            f"- attitude: {ai['attitude']}; trust in AI outputs {ai['trust_1_5']}/5",
+            f"- concerns about AI: {'; '.join(ai['concerns'])}",
+            f"- outlook: {ai['outlook']}",
+        ]
+    if p.marketing:
+        lines += _marketing_card(p)
+    lines += [
         f"Personality (1-5): openness {per['openness']}, conscientiousness {per['conscientiousness']}, "
         f"extraversion {per['extraversion']}, agreeableness {per['agreeableness']}, neuroticism {per['neuroticism']}",
         "How this person fills in surveys:",
@@ -994,3 +1218,42 @@ def persona_card(p: Persona) -> str:
         f"- writing: {st['writing']}",
     ]
     return "\n".join(lines)
+
+
+MARKETING_SETTINGS = {
+    "agency": "works at a marketing / advertising / PR agency", "in_house": "works in an in-house marketing team",
+    "freelance": "works as a freelancer for clients", "own_business": "runs their own business and does its marketing",
+    "other": "other marketing-related role",
+}
+OTHER_ROLES = {
+    "sales": "sales role with regular marketing and promotion tasks", "design": "designer creating promotional materials",
+    "video": "video producer for promotional content", "pr": "PR and communications", "ecommerce": "e-commerce management",
+    "marketing": "marketing tasks next to another main job",
+}
+
+
+def _marketing_card(p: Persona) -> list[str]:
+    m = p.marketing
+    if not m["active"]:
+        return ["Marketing work: has NOT done any marketing or promotion in the last 12 months "
+                "(received the survey link from an acquaintance)."]
+    setting = MARKETING_SETTINGS[m["setting"]]
+    if m["setting"] == "other":
+        setting += f" ({OTHER_ROLES[m['other_role']]})"
+    lines = ["Marketing work in the last 12 months:",
+             f"- {setting}; about {m['years']} years in marketing or promotion"]
+    done = [t for t in work.MARKETING_TASKS if m["tasks"][t] != "no"]
+    skipped = [work.MARKETING_TASK_LABELS[t] for t in work.MARKETING_TASKS if m["tasks"][t] == "no"]
+    if m["uses_ai"]:
+        lines.append("- tasks and how often AI is used for them: "
+                     + "; ".join(f"{work.MARKETING_TASK_LABELS[t]}: {m['tasks'][t]}" for t in done))
+        lines.append(f"- types of AI tools: {', '.join(m['ai_tool_kinds']) or 'general chatbots only'}")
+        practices = ", ".join(x.replace("_", " ") for x in m["risk_practices"])
+        lines.append(f"- risk practices (own or organisation's): {practices}")
+    else:
+        lines.append("- tasks: " + "; ".join(work.MARKETING_TASK_LABELS[t] for t in done) + " (all without AI)")
+    if skipped:
+        lines.append(f"- does not do: {'; '.join(skipped)}")
+    training = {"yes": "has taken part", "planned": "has not, but plans to", "no": "has not and does not plan to"}
+    lines.append(f"- training on AI in marketing/communication: {training[m['ai_training']]}")
+    return lines

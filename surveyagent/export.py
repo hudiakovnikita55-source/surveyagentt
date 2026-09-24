@@ -26,13 +26,23 @@ PERSONA_COLUMNS = [
 ]
 
 
+MARKETING_COLUMNS = [
+    ("did_marketing", lambda p: "yes" if p.marketing["active"] else "no"),
+    ("marketing_setting", lambda p: p.marketing.get("setting") or ""),
+    ("marketing_years", lambda p: p.marketing.get("years", "")),
+    ("uses_ai_in_marketing", lambda p: "" if not p.marketing["active"] else "yes" if p.marketing["uses_ai"] else "no"),
+    ("ai_training", lambda p: p.marketing.get("ai_training") or ""),
+]
+
+
 def write_personas_csv(path: str | Path, personas: list) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
+    columns = PERSONA_COLUMNS + (MARKETING_COLUMNS if any(p.marketing for p in personas) else [])
     with open(path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
-        writer.writerow([name for name, _ in PERSONA_COLUMNS])
+        writer.writerow([name for name, _ in columns])
         for p in personas:
-            writer.writerow([get(p) for _, get in PERSONA_COLUMNS])
+            writer.writerow([get(p) for _, get in columns])
 
 
 def write_responses_csv(path: str | Path, questionnaire: Questionnaire, records: list[dict]) -> None:
@@ -46,10 +56,11 @@ def write_responses_csv(path: str | Path, questionnaire: Questionnaire, records:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
-        writer.writerow(["persona_id", "persona_name", "generated_at"] + [title for _, _, title in columns])
+        writer.writerow(["persona_id", "persona_name", "generated_at", "synthetic"] + [title for _, _, title in columns])
         for record in records:
             answers = record["answers"]
-            row = [record["persona_id"], record.get("persona_name", ""), record.get("generated_at", "")]
+            row = [record["persona_id"], record.get("persona_name", ""), record.get("generated_at", ""),
+                   "yes" if record.get("synthetic", True) else "no"]
             for q, grid_row, _ in columns:
                 value = answers.get(q.id)
                 if grid_row is not None:
